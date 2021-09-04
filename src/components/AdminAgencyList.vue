@@ -22,7 +22,7 @@
           <th class="text-left">No</th>
           <th class="text-left">Agency</th>
           <th class="text-left address">Address</th>
-          <th class="text-right">Action</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody v-if="agencies.length">
@@ -32,7 +32,7 @@
             <a class="item" @click="showDetailAgency(agency)">{{ agency.name }}</a>
           </td>
           <td class="text-left address">{{ agency.address }}</td>
-          <td class="text-right">
+          <td>
             <button class="btn btn-warning" @click="showEditAgencyForm(agency)">
               <span class="material-icons">edit</span>
             </button>
