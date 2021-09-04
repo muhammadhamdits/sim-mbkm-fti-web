@@ -102,10 +102,14 @@ export default {
       if(jsonData.success){
         this.$emit('statusChange', 'List', '', { status: true, message: jsonData.success})
       }else{
-        jsonData.errors.forEach(error => {
-          if(error.key === "name") this.error.name = error.message
-          else if(error.key === "address") this.error.address = error.message
-        });
+        if(jsonData.errors){
+          jsonData.errors.forEach(error => {
+            if(error.key === "name") this.error.name = error.message
+            else if(error.key === "address") this.error.address = error.message
+          });
+        }else{
+          this.error.address = jsonData.error
+        }
       }
     }
   }
