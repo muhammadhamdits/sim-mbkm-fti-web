@@ -14,10 +14,10 @@ export default {
     
   },
   created(){
-    document.body.style.backgroundColor = "#42b983";
     document.body.style.padding = "16px";
   },
   mounted(){
+    document.body.style.backgroundColor = "#42b983";
     document.title = 'Login - SIM MBKM FTI'
   },
   unmounted(){

@@ -1,5 +1,5 @@
 <template>
-  <div class="nav">
+  <div class="nav" v-if="role">
     <div class="nav-left">
       <router-link to="/">SIM MBKM FTI</router-link>
     </div>
@@ -45,9 +45,20 @@ body{
   margin: 0;
 }
 
-/* content{
+.content{
+  position: fixed;
+  top: 8vh;
+  bottom: 0;
+  left: 0;
+  right: 0;
   overflow: scroll;
-} */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.content::-webkit-scrollbar{
+  display: none;
+}
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -72,6 +83,10 @@ body{
   color: #fff;
   padding: 8px;
   border-radius: 16px;
+}
+
+.nav-center a:hover{
+  background-color: #3ba374;
 }
 
 .nav-center a.router-link-exact-active {
@@ -114,15 +129,29 @@ body{
 
 @media screen and (max-width: 600px) {
   .nav-center{
-    top: 49px;
+    /* top: 49px; */
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 93vh;
+    padding: 8px;
+    /* width: auto; */
   }
 
-  .nav{
-    height: 68px;
+  .nav-center a{
+    position: relative;
+    display: inline-block;
   }
+
+  /* .nav{ */
+    /* height: 68px; */
+  /* } */
 
   .content{
-    margin-top: 32px;
+    /* margin-top: 32px; */
+    bottom: 8vh;
   }
 }
 </style>

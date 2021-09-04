@@ -1,14 +1,16 @@
 <template>
-  <form>
-    <h1>Login</h1>
-    <h5>Please login before you can continue...</h5>
-    <label>Username:</label>
-    <input type="text" name="username" required v-model="username">
-    <label>Password:</label>
-    <input type="password" name="password" required v-model="password">
-    <p>{{ message }}</p>
-    <button @click="login">Login</button>
-  </form>
+  <div class="container">
+    <form>
+      <h1>Login</h1>
+      <h5>Please login before you can continue...</h5>
+      <label>Username:</label>
+      <input type="text" v-model="username">
+      <label>Password:</label>
+      <input type="password" v-model="password">
+      <p>{{ message }}</p>
+      <button @click="login">Login</button>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -51,55 +53,57 @@ export default {
 </script>
 
 <style scoped>
-  form{
-    max-width: 420px;
-    margin: 30px auto;
-    background: white;
-    text-align: left;
-    padding: 40px;
-    border-radius: 10px;
-    border: 1px solid #aaa;
-    margin-top: 100px;
-  }
-  label{
-    color: #444;
-    display: inline-block;
-    margin: 25px 0 15px;
-    font-size: 0.6em;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: bold;
-  }
-  input, button{
-    display: block;
-    padding: 10px 6px;
-    width: 100%;
-    box-sizing: border-box;
-    border: none;
-    border-bottom: 1px solid #ddd;
-    border-radius: 8px;
-    color: #555;
-  }
-  button{
-    margin-top: 40px;
-    background-color: #42b983;
-    color: #fff;
-    font-size: 0.8em;
-    font-weight: bolder;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  button:hover{
-    background-color: white;
-    border: 1px solid #42b983;
-    color: #42b983;
-  }
-  h5{
-    color: #777
-  }
-  p{
-    font-size: 0.8em;
-    font-weight: bolder;
-    color: red
-  }
+.container{
+  margin: 0 16px;
+}
+form{
+  max-width: 420px;
+  margin: 80px auto;
+  background: white;
+  text-align: left;
+  padding: 40px;
+  border-radius: 10px;
+  border: 1px solid #fff;
+}
+label{
+  color: #444;
+  display: inline-block;
+  margin: 25px 0 15px;
+  font-size: 0.6em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+input, button{
+  display: block;
+  padding: 10px 6px;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  border-radius: 8px;
+  color: #555;
+}
+button{
+  margin-top: 40px;
+  background-color: #42b983;
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: bolder;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+button:hover{
+  background-color: white;
+  border: 1px solid #42b983;
+  color: #42b983;
+}
+h5{
+  color: #777
+}
+p{
+  font-size: 0.8em;
+  font-weight: bolder;
+  color: red
+}
 </style>
