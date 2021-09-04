@@ -6,7 +6,9 @@
       <input type="text" v-model="agencyData.name" readonly>
       <label>Address:</label>
       <input type="text" v-model="agencyData.address" readonly>
-      <button @click="backWard">Back</button>
+      <button @click="backWard">
+        <span class="material-icons">arrow_back</span> Back
+      </button>
     </form>
   </div>
   <button class="float" @click="showAddAgencyForm">
@@ -115,6 +117,12 @@ button:hover{
 .float:hover{
   background-color: #3ba374;
   color: #fff;
+}
+
+.container .material-icons{
+  font-size: 1.6em;
+  vertical-align: middle;
+  margin: -8px 0 -4px -8px;
 }
 
 @media screen and (max-width: 600px) {

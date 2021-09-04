@@ -3,8 +3,12 @@
     <Modal @closeModal="closeModal" v-if="modalStatus">
       <h4>Are you sure you want to delete this agency data?</h4>
       <h2>{{ agencyName }}</h2>
-      <button class="btn btn-warning btn-md" @click="closeModal">No</button>
-      <button class="btn btn-danger btn-md" @click="deleteAgency">Yes</button>
+      <button class="btn btn-warning btn-md" @click="closeModal">
+        <span class="material-icons">arrow_back</span> No, go back!
+      </button>
+      <button class="btn btn-danger btn-md" @click="deleteAgency">
+        <span class="material-icons">delete</span> Yes, delete it!
+      </button>
     </Modal>
 
     <Modal @closeModal="closeModal" v-if="alerts.status">
@@ -225,24 +229,24 @@ h3{
   margin: 8px 8px 0 8px;
 }
 
-.btn-warning{
+.btn-warning:hover{
   color: white;
-  border: 1px solid orange;
   background-color: orange;
 }
 
-.btn-warning:hover{
+.btn-warning{
+  border: 1px solid orange;
   background-color: white;
   color: orange;
 }
 
-.btn-danger{
-  border: 1px solid firebrick;
+.btn-danger:hover{
   background-color: firebrick;
   color: #fff;
 }
 
-.btn-danger:hover{
+.btn-danger{
+  border: 1px solid firebrick;
   background-color: white;
   color: firebrick;
 }
@@ -262,6 +266,12 @@ h3{
 
 h2 .material-icons{
   font-size: 2em;
+}
+
+.btn-md .material-icons{
+  font-size: 1.6em;
+  vertical-align: middle;
+  margin: -8px 0 -4px -8px;
 }
 
 @media screen and (max-width: 600px) {

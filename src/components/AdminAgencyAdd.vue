@@ -9,9 +9,15 @@
       <label>Address:</label>
       <input type="text" v-model="address">
       <p>{{ error.address }}</p>
-      <button class="float-left" @click="backWard">Back</button>
-      <button class="float-right" @click="submitData" v-if="agencyData === ''">Submit</button>
-      <button class="float-right" @click="updateData" v-else>Update</button>
+      <button class="float-left" @click="backWard">
+        <span class="material-icons">arrow_back</span> Back
+      </button>
+      <button class="float-right" @click="submitData" v-if="agencyData === ''">
+        <span class="material-icons">save</span> Submit
+      </button>
+      <button class="float-right" @click="updateData" v-else>
+        <span class="material-icons">save</span> Update
+      </button>
     </form>
   </div>
 </template>
@@ -175,5 +181,11 @@ p{
   font-size: 0.8em;
   font-weight: bolder;
   color: red
+}
+
+.material-icons{
+  font-size: 1.6em;
+  vertical-align: middle;
+  margin: -8px 0 -4px -8px;
 }
 </style>
