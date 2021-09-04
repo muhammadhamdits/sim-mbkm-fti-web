@@ -6,34 +6,47 @@
       <button class="btn btn-warning btn-md" @click="closeModal">No</button>
       <button class="btn btn-danger btn-md" @click="deleteAgency">Yes</button>
     </Modal>
+
+    <Modal @closeModal="closeModal" v-if="alerts.status">
+      <h2><span class="material-icons">check</span></h2>
+      <h4>{{ alerts.message }}</h4>
+    </Modal>
     <h3>Agencies list</h3>
     <table>
       <thead>
         <tr>
-          <th>No</th>
-          <th>Agency</th>
-          <th>Action</th>
+          <th class="text-left">No</th>
+          <th class="text-left">Agency</th>
+          <th class="text-left address">Address</th>
+          <th class="text-right">Action</th>
         </tr>
       </thead>
       <tbody v-if="agencies.length">
         <tr v-for="(agency, index) in agencies" :key="agency.id">
-          <td>{{ 1+index }}</td>
-          <td class="text-left">{{ agency.name }}</td>
+          <td class="text-left">{{ 1+index }}</td>
+          <td class="text-left">
+            <a class="item" @click="showDetailAgency(agency)">{{ agency.name }}</a>
+          </td>
+          <td class="text-left address">{{ agency.address }}</td>
           <td class="text-right">
-            <button class="btn btn-warning" @click="showEditAgencyForm(agency)">Edit</button>
-            <button class="btn btn-danger" @click="confirmDelete(agency)">Delete</button>
+            <button class="btn btn-warning" @click="showEditAgencyForm(agency)">
+              <span class="material-icons">edit</span>
+            </button>
+            <button class="btn btn-danger" @click="confirmDelete(agency)">
+              <span class="material-icons">delete</span>
+            </button>
           </td>
         </tr>
       </tbody>
       <tbody v-else>
         <tr>
-          <td colspan="3"> No data available.... </td>
+          <td colspan="4" class="no-data"> No data available.... </td>
         </tr>
       </tbody>
     </table>
   </div>
   <button class="float" @click="showAddAgencyForm">
-    <p>+</p>
+    <p><span class="material-icons">add</span></p>
   </button>
 </template>
 
@@ -45,6 +58,7 @@ import Modal from '@/components/Modal.vue'
 export default {
   name: 'AdminAgencyList',
   components: { Modal },
+  props: ['alerts'],
   emits: ['statusChange', 'closeModal'],
   data(){
     return { 
@@ -85,8 +99,12 @@ export default {
     showEditAgencyForm(data){
       this.$emit('statusChange', 'Edit', data)
     },
+    showDetailAgency(data){
+      this.$emit('statusChange', 'Show', data)
+    },
     closeModal(){
       this.modalStatus = false
+      this.alerts.status = false
     },
     confirmDelete(agency){
       this.modalStatus = true
@@ -109,11 +127,15 @@ export default {
 
       if(jsonData.success){
         this.closeModal()
+        this.$emit('statusChange', 'List', '', { status: true, message: jsonData.success })
         this.getAgencies()
       }else{
         
       }
     }
+  },
+  mounted(){
+    // console.log(this.alert)
   }
 }
 </script>
@@ -136,6 +158,7 @@ export default {
 table{
   width: 100%;
   border-top: 1px solid #ccc;
+  padding-bottom: 12vh;
 }
 
 tr{
@@ -184,9 +207,7 @@ h3{
 }
 
 .float:hover{
-  color: #42b983;
-  background-color: #fff;
-  border: 1px solid #42b983;
+  background-color: #3ba374;
 }
 
 .btn{
@@ -226,12 +247,36 @@ h3{
   color: firebrick;
 }
 
+.item{
+  color: #42b983;
+  cursor: pointer;
+}
+
+.item:hover{
+  font-weight: bolder;
+}
+
+.material-icons{
+  font-size: 1.2em;
+}
+
+h2 .material-icons{
+  font-size: 2em;
+}
+
 @media screen and (max-width: 600px) {
   .float{
     bottom: 12vh;
   }
-  table{
-    padding-bottom: 12vh;
+  .address{
+    display: none;
   }
+  .no-data{
+    column-span: 3;
+  }
+
+  /* table{
+    padding-bottom: 12vh;
+  } */
 }
 </style>

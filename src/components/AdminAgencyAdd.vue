@@ -66,7 +66,7 @@ export default {
       const jsonData = await res.json()
 
       if(jsonData.success){
-        this.$emit('statusChange', 'List')
+        this.$emit('statusChange', 'List', '', { status: true, message: jsonData.success})
       }else{
         jsonData.errors.forEach(error => {
           if(error.key === "name") this.error.name = error.message
@@ -94,7 +94,7 @@ export default {
       const jsonData = await res.json()
 
       if(jsonData.success){
-        this.$emit('statusChange', 'List')
+        this.$emit('statusChange', 'List', '', { status: true, message: jsonData.success})
       }else{
         jsonData.errors.forEach(error => {
           if(error.key === "name") this.error.name = error.message

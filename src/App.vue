@@ -5,8 +5,8 @@
     </div>
     
     <div class="nav-right">
-      <a href="#">Notif</a>
-      <a href="#">Akun</a>
+      <a href="#"><span class="material-icons">notifications</span></a>
+      <a href="#"><span class="material-icons">person</span></a>
     </div>
   </div>
 
@@ -85,7 +85,7 @@ body{
   border-radius: 16px;
 }
 
-.nav-center a:hover{
+.nav-center a:hover, .nav-right a:hover{
   background-color: #3ba374;
 }
 
@@ -96,7 +96,7 @@ body{
 
 .nav{
   background-color: #42b983;
-  padding: 16px;
+  padding: 16px 12px 12px 12px;
   position: fixed;
   top: 0;
   right: 0;
@@ -107,7 +107,7 @@ body{
   font-weight: bold;
   text-decoration: none;
   color: #fff;
-  padding: 8px;
+  padding: 12px;
   border-radius: 16px;
 }
 
@@ -125,6 +125,12 @@ body{
 
 .nav-left, .nav-right, .nav-center{
   display: inline-block;
+}
+
+.nav-right .material-icons{
+  margin-top: -38px;
+  vertical-align: -6px;
+  margin-bottom: 2px;
 }
 
 @media screen and (max-width: 600px) {
