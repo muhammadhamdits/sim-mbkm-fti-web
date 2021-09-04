@@ -39,10 +39,12 @@
 <script>
 import { ref } from '@vue/reactivity'
 import { getCookie } from "../utils/function";
+import { watch } from '@vue/runtime-core';
 
 export default {
   name: 'AdminTypeList',
   emits: ['statusChange'],
+  props: ['initTypes'],
   setup(){
     const types = ref('')
     const url = 'http://192.168.100.38:5000/type'
@@ -62,8 +64,6 @@ export default {
       types.value = jsonData
     }
 
-    getTypes()
-
     return { types, getTypes }
   },
   methods: {
@@ -76,6 +76,15 @@ export default {
           type: 'confirmAlert',
           data: type
       })
+    }
+  },
+  created(){
+    if(this.initTypes.length) this.types = this.initTypes
+    else this.getTypes()
+  },
+  watch: {
+    initTypes(value, oldValue){
+      this.getTypes()
     }
   }
 }

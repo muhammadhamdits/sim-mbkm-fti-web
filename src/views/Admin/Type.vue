@@ -1,6 +1,6 @@
 <template>
   <div v-if="typeStatus === 'List'">
-    <AdminTypeList @statusChange="updateStatus"></AdminTypeList>
+    <AdminTypeList @statusChange="updateStatus" :initTypes="initTypes"></AdminTypeList>
   </div>
   <div v-else>
     <AdminTypeForm @statusChange="updateStatus" :formData="formData"></AdminTypeForm>
@@ -30,6 +30,7 @@ import AdminTypeForm from '@/components/AdminTypeForm.vue'
 import Modal from '@/components/Modal.vue'
 import { ref } from '@vue/reactivity'
 import { onMounted } from '@vue/runtime-core'
+import { getCookie } from "@/utils/function"
 
 export default {
   name: 'Type',
@@ -41,8 +42,11 @@ export default {
   emits: ['statusChange'],
   setup(){
     const typeStatus = ref('List')
+    const initTypes = ref({})
     const modalData = ref({ status: false })
     const formData = ref('')
+    const url = `http://192.168.100.38:5000/type`
+    const jwt = getCookie('jwt')
 
     const updateStatus = (status, jsonData=modalData.value) => {
       if(status === 'Add'){
@@ -74,15 +78,48 @@ export default {
       modalData.value = { status: false }
     }
 
-    const deleteType = () => {
-      
+    const getTypes = async() => {
+      let result = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt
+        }
+      })
+      let jsonData = await result.json()
+
+      initTypes.value = jsonData
     }
 
     onMounted(() => {
       document.title = 'Program Type - SIM MBKM FTI'
     })
 
-    return { typeStatus, modalData, formData, updateStatus, closeModal }
+    return { typeStatus, initTypes, modalData, formData, url, jwt, updateStatus, closeModal, getTypes }
+  },
+  methods: {
+    async deleteType(){
+      let res = await fetch(`${this.url}/${this.modalData.data.id}`, {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: this.jwt
+        }
+      })
+      let jsonData = await res.json()
+
+      if(jsonData.success){
+        let jsonModal = {
+          status: true,
+          type: 'flashMessage',
+          message: jsonData.success
+        }
+        this.getTypes()
+        this.modalData = jsonModal
+      }
+    }
   }
 }
 </script>
