@@ -124,7 +124,7 @@ th, td{
 
 @media screen and (max-width: 600px) {
   .float{
-    bottom: 12vh;
+    bottom: 72px;
   }
 }
 </style>

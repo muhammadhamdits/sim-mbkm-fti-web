@@ -276,7 +276,7 @@ h2 .material-icons{
 
 @media screen and (max-width: 600px) {
   .float{
-    bottom: 12vh;
+    bottom: 72px;
   }
   .address{
     display: none;

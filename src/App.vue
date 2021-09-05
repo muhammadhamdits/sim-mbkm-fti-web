@@ -46,8 +46,9 @@ body{
 }
 
 .content{
+  z-index: -1;
   position: fixed;
-  top: 8vh;
+  top: 48px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -141,7 +142,8 @@ body{
     bottom: 0;
     left: 0;
     right: 0;
-    top: 93vh;
+    top: 100vh;
+    margin-top: -48px;
     padding: 8px;
     /* width: auto; */
   }

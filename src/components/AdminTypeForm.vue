@@ -65,6 +65,7 @@ export default {
         }
         this.$emit('statusChange', 'List', jsonModal)
       }else{
+        this.error = {}
         if(jsonData.errors){
           jsonData.errors.forEach(error => {
             this.error.name = error.message

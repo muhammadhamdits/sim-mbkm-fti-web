@@ -102,6 +102,7 @@ export default {
       if(jsonData.success){
         this.$emit('statusChange', 'List', '', { status: true, message: jsonData.success})
       }else{
+        this.error = {}
         if(jsonData.errors){
           jsonData.errors.forEach(error => {
             if(error.key === "name") this.error.name = error.message
