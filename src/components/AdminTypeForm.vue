@@ -30,7 +30,7 @@ export default {
   setup(){
     const name = ref('')
     const error = ref({})
-    const fetch = ref({ url: 'http://192.168.100.38:5000/type', method: 'POST' })
+    const fetch = ref({ url: `${process.env.VUE_APP_API_URI}/type`, method: 'POST' })
     const jwt = getCookie('jwt')
     
     return { name, fetch, jwt, error }

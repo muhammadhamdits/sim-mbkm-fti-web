@@ -143,7 +143,7 @@ body{
     left: 0;
     right: 0;
     top: 100vh;
-    margin-top: -48px;
+    margin-top: -50px;
     padding: 8px;
     /* width: auto; */
   }
@@ -159,7 +159,7 @@ body{
 
   .content{
     /* margin-top: 32px; */
-    bottom: 8vh;
+    bottom: 48px;
   }
 }
 </style>
