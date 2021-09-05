@@ -42,7 +42,8 @@ export default {
 
       if(jsonData.status === "Success"){
         this.$cookies.set("jwt", jsonData.token, jsonData.maxAge)
-        this.$root.role = jsonData.role
+        this.$root.initAuth()
+        // this.$root.role = jsonData.role
         if(jsonData.role === "Admin") this.$router.push({ name: 'AdminProgram' })
       }else{
         this.message = jsonData.message

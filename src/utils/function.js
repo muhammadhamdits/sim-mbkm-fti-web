@@ -1,5 +1,5 @@
 const checkAuth = async (data) => {
-  const uri = 'http://192.168.100.38:5000/'
+  const uri = `${process.env.VUE_APP_API_URI}`
 
   const res = await fetch(uri, { 
     method: 'POST', 
@@ -29,10 +29,17 @@ const getCookie = (cname) => {
   return "";
 }
 
+function delCookie(cname, cvalue='', exdays=1) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays));
+  let expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
 function toggleFormElements(document, status) { 
   document.querySelectorAll('form > *').forEach(function(a){
     if(a.tagName !== 'BUTTON') a.disabled=status
   })
 }
 
-module.exports = { checkAuth, getCookie, toggleFormElements }
+module.exports = { checkAuth, getCookie, delCookie, toggleFormElements }

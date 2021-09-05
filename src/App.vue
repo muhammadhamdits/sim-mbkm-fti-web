@@ -1,12 +1,12 @@
 <template>
-  <div class="nav" v-if="role">
+  <div class="nav" v-if="userData">
     <div class="nav-left">
       <router-link to="/">SIM MBKM FTI</router-link>
     </div>
     
     <div class="nav-right">
-      <a href="#"><span class="material-icons">notifications</span></a>
-      <a href="#"><span class="material-icons">person</span></a>
+      <a href="#"><span class="material-icons" v-if="role !== 'Admin'">notifications</span></a>
+      <a href="#" @click="toggleSideMenu(true)"><span class="material-icons">person</span></a>
     </div>
   </div>
 
@@ -20,21 +20,47 @@
   <div class="content">
     <router-view/>
   </div>
+
+  <SideMenu @closeSideMenu="toggleSideMenu" :userData="userData" v-if="sideMenuStatus"></SideMenu>
 </template>
 
 <script>
+import SideMenu from '@/components/SideMenu.vue'
 import { ref } from '@vue/reactivity';
 import { checkAuth, getCookie } from "./utils/function";
+import { onMounted } from '@vue/runtime-core';
 
 export default {
+  components: {
+    SideMenu
+  },
+  emits: ['closeSideMenu'],
   setup(){
     const role = ref('')
+    const userData = ref('')
+    const sideMenuStatus = ref(false)
     
-    checkAuth({ jwt: getCookie('jwt') }).then(authData => {
-      role.value = authData.role
+    const initAuth = () => {
+      checkAuth({ jwt: getCookie('jwt') }).then(authData => {
+        role.value = authData.role
+        if(authData.user){
+          userData.value = authData.user
+          if(role.value === true) userData.value.role = "Head of Department"
+          else if(role.value === false) userData.value.role = "Supervisor"
+          else userData.value.role = role.value
+        }
+      })
+    }
+
+    onMounted(() => {
+      initAuth()
     })
 
-    return { role }
+    const toggleSideMenu = (status = false) => {
+      sideMenuStatus.value = status
+    }
+
+    return { role, userData, sideMenuStatus, toggleSideMenu, initAuth }
   }
 }
 </script>

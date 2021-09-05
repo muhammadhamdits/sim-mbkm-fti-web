@@ -5,18 +5,18 @@
       <thead>
         <tr>
           <th>No</th>
-          <th>Name</th>
-          <th>Agency</th>
-          <th>Type</th>
+          <th class="text-left">Name</th>
+          <th class="text-left responsive">Agency</th>
+          <th class="text-left responsive">Type</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody v-if="initPrograms.length">
         <tr v-for="(program, index) in initPrograms" :key="program.id">
           <td>{{ 1+index }}</td>
-          <td @click="showProgramForm('Show', program)" class="item">{{ program.name }}</td>
-          <td>{{ program.agency_id }}</td>
-          <td>{{ program.program_type_id }}</td>
+          <td @click="showProgramForm('Show', program)" class="item text-left">{{ program.name }}</td>
+          <td class="text-left responsive">{{ program.agency_id }}</td>
+          <td class="text-left responsive">{{ program.program_type_id }}</td>
           <td>
             <button class="btn btn-warning" @click="showProgramForm('Edit', program)">
               <span class="material-icons">edit</span>
@@ -140,6 +140,9 @@ th, td{
 @media screen and (max-width: 600px) {
   .float{
     bottom: 72px;
+  }
+  .responsive{
+    display: none;
   }
 }
 </style>
