@@ -30,6 +30,7 @@ import AdminCourseForm from '@/components/AdminCourseForm.vue'
 import Modal from '@/components/Modal.vue'
 import { getCookie } from "@/utils/function"
 import { ref } from '@vue/reactivity'
+import { onMounted } from '@vue/runtime-core'
 
 export default {
   name: 'Course',
@@ -44,7 +45,7 @@ export default {
     const initCourses = ref({})
     const formData = ref({})
     const modalData = ref({ status: false })
-    const url = `http://192.168.100.38:5000/course`
+    const url = `${process.env.VUE_APP_API_URI}/course`
     const jwt = getCookie('jwt')
 
     const getCourses = async() => {
@@ -101,7 +102,6 @@ export default {
           course: data
         }
       }
-
       courseStatus.value = status
     }
 
@@ -109,7 +109,10 @@ export default {
       modalData.value = { status: false }
     }
 
-    getCourses()
+    onMounted(() => {
+      getCourses()
+      document.title = 'Course - SIM MBKM FTI'
+    })
 
     return { courseStatus, initCourses, formData, modalData, deleteCourse, updateStatus, closeModal }
   }

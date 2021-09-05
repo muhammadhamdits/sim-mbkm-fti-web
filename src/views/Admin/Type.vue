@@ -45,7 +45,7 @@ export default {
     const initTypes = ref({})
     const modalData = ref({ status: false })
     const formData = ref('')
-    const url = `http://192.168.100.38:5000/type`
+    const url = `${process.env.VUE_APP_API_URI}/type`
     const jwt = getCookie('jwt')
 
     const updateStatus = (status, jsonData=modalData.value) => {

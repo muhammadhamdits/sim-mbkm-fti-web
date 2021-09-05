@@ -29,4 +29,10 @@ const getCookie = (cname) => {
   return "";
 }
 
-module.exports = { checkAuth, getCookie }
+function toggleFormElements(document, status) { 
+  document.querySelectorAll('form > *').forEach(function(a){
+    if(a.tagName !== 'BUTTON') a.disabled=status
+  })
+}
+
+module.exports = { checkAuth, getCookie, toggleFormElements }

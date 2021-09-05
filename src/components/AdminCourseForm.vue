@@ -34,7 +34,7 @@ export default {
     const sks = ref('')
     const error = ref({})
     const jwt = getCookie('jwt')
-    const fetch = ref({ url: 'http://192.168.100.38:5000/course', method: 'POST' })
+    const fetch = ref({ url: `${process.env.VUE_APP_API_URI}/course`, method: 'POST' })
 
     return { name, sks, error, jwt, fetch }
   },

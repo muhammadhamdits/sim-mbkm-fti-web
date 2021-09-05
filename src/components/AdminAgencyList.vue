@@ -75,7 +75,7 @@ export default {
     const agencies = ref('')
 
     const getAgencies = () => {
-      const url = 'http://192.168.100.38:5000/agency'
+      const url = `${process.env.VUE_APP_API_URI}/agency`
       const jwt = getCookie('jwt')
 
       fetch(url, {
@@ -116,7 +116,7 @@ export default {
       this.agencyName = agency.name
     },
     async deleteAgency(){
-      const url = `http://192.168.100.38:5000/agency/${this.agencyId}`
+      const url = `${process.env.VUE_APP_API_URI}/agency/${this.agencyId}`
       const jwt = getCookie('jwt')
 
       const res = await fetch(url, {

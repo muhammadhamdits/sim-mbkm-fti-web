@@ -54,7 +54,7 @@ export default {
     },
     async submitData(e){
       e.preventDefault()
-      const url = 'http://192.168.100.38:5000/agency'
+      const url = `${process.env.VUE_APP_API_URI}/agency`
       const jwt = getCookie('jwt')
       let name = this.name
       let address = this.address
@@ -82,7 +82,7 @@ export default {
     },
     async updateData(e){
       e.preventDefault()
-      const url = `http://192.168.100.38:5000/agency/${this.id}`
+      const url = `${process.env.VUE_APP_API_URI}/agency/${this.id}`
       const jwt = getCookie('jwt')
       let name = this.name
       let address = this.address
