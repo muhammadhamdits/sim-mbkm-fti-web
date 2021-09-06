@@ -30,10 +30,24 @@
       <label>Total SKS</label>
       <input type="number" v-model="sks">
       <p>{{ error.sks }}</p>
-      <input type="checkbox" v-model="is_certified"><label class="checkbox-label">Is Certified?</label>
-      <br>
-      <input type="checkbox" v-model="is_remote"><label class="checkbox-label">Is Remote?</label>
-      <br>
+      <label>Courses</label>
+      <select multiple class="multiple-select" v-model="courses">
+        <option v-for="course in this.formData.courses" :value="course.id" :key="course.id">
+          {{ course.name }}
+        </option>
+      </select>
+      <div class="checkBoxContainer">
+        <label class="checkbox certiFied" @click="toggleCertified">
+          <span class="material-icons" v-if="is_certified">verified</span> 
+          <span class="material-icons" v-else>unpublished</span> 
+          Is Certified?
+        </label>
+        <label class="checkbox remoTe" @click="toggleRemote">
+          <span class="material-icons" v-if="is_remote">wifi_tethering</span> 
+          <span class="material-icons" v-else>wifi_tethering_off</span> 
+          Is Remote?
+        </label>
+      </div>
       <button class="float-left" @click="backWard">
         <span class="material-icons">arrow_back</span> Back
       </button>
@@ -49,7 +63,7 @@
 
 <script>
 import { readonly, ref } from '@vue/reactivity'
-import { getCookie, toggleFormElements } from '../utils/function'
+import { getCookie, toggleFormElements, addClass, removeClass } from '../utils/function'
 import { onMounted } from '@vue/runtime-core'
 
 export default {
@@ -71,6 +85,7 @@ export default {
     const error = ref({})
     const agencies = ref([])
     const types = ref([])
+    const courses = ref([])
     const jwt = getCookie('jwt')
 
     const getAgencies = async () => {
@@ -117,6 +132,7 @@ export default {
       is_remote,
       agencies, 
       types,
+      courses,
       error,
       jwt
     }
@@ -152,7 +168,8 @@ export default {
           min_semester: this.min_semester, 
           sks: this.sks,
           is_certified: this.is_certified,
-          is_remote: this.is_remote
+          is_remote: this.is_remote,
+          courses: this.courses
         })
       })
       let jsonData = await result.json()
@@ -190,9 +207,39 @@ export default {
     showEditForm(){
       toggleFormElements(document, false)
       this.$emit('statusChange', 'Edit', this.formData.program)
+    },
+    toggleCertified(e){
+      if(this.formData.status !== 'Show'){
+        if(this.is_certified) removeClass(e.target, "checkBoxActive")
+        else addClass(e.target, "checkBoxActive")
+        this.is_certified = !this.is_certified
+      }
+    },
+    toggleRemote(e){
+      if(this.formData.status !== 'Show'){
+        if(this.is_remote) removeClass(e.target, "checkBoxActive")
+        else addClass(e.target, "checkBoxActive")
+        this.is_remote = !this.is_remote
+      }
+    },
+    async getCourses(){
+      let res = await fetch(`${process.env.VUE_APP_API_URI}/program/${this.formData.program.id}/course`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: this.jwt
+        }
+      })
+      let jsonData = await res.json()
+      let coursesId = []
+      jsonData.forEach(value => {
+        coursesId.push(value.course_id)
+      })
+      this.courses = coursesId
     }
   },
   mounted(){
+    this.getCourses()
     if(this.formData.status === 'Edit' || this.formData.status === 'Show'){
       this.name = this.formData.program.name, 
       this.agency_id = this.formData.program.agency_id, 
@@ -206,19 +253,19 @@ export default {
       this.is_remote = this.formData.program.is_remote
     }
     if(this.formData.status === 'Show') toggleFormElements(document, true)
+    if(this.is_certified) addClass(document.getElementsByClassName("certiFied")[0], "checkBoxActive")
+    if(this.is_remote) addClass(document.getElementsByClassName("remoTe")[0], "checkBoxActive")
   }
 }
 </script>
 
 <style scoped>
-
-
 form{
-  max-width: 420px;
+  max-width: 640px;
   margin: 32px auto;
   background: white;
   text-align: left;
-  padding: 40px;
+  padding: 40px 24px;
   border-radius: 10px;
   border: 1px solid #42b983;
 }
@@ -255,7 +302,7 @@ input[type=checkbox] {
 button{
   display: inline-block;
   width: 46%;
-  margin: 40px 0 0;
+  margin: 20px 0 0;
   border: 1px solid #42b983;
   background-color: #42b983;
   color: #fff;
@@ -286,6 +333,55 @@ p{
   margin: 0 auto;
   max-width: 1024px;
   padding: 16px;
+}
+
+.multiple-select option{
+  float: left;
+  /* display: inline-block; */
+  padding: 2px 8px;
+  background-color: #fff;
+  border: 1px solid #42b983;
+  margin: 2px 2px 4px 2px;
+  color: #42b983;
+  border-radius: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.multiple-select option:hover{
+  background-color: #42b983;
+  color: #fff;
+}
+
+.multiple-select option:checked, .multiple-select option[selected] {
+  background: linear-gradient(0deg, #42b983 0%, #42b983 100%);
+}
+
+.checkBoxContainer{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkbox{
+  font-size: 0.75em;
+  cursor: pointer;
+  color: #42b983;
+  border: 1px solid #42b983;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-right: 8px;
+  text-align: center;
+}
+
+.checkbox:hover, .checkBoxActive{
+  color: #fff;
+  background-color: #42b983;
+}
+
+.checkbox .material-icons{
+  margin: 0;
 }
 
 .float-right{

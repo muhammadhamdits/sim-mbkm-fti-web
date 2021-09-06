@@ -42,10 +42,24 @@ export default {
   setup(){
     const programStatus = ref('List')
     const initPrograms = ref({})
+    const initCourses = ref({})
     const formData = ref({})
     const modalData = ref({ status: false })
     const url = `${process.env.VUE_APP_API_URI}/program`
     const jwt = getCookie('jwt')
+
+    const getCourses = async() => {
+      let result = await fetch(`${process.env.VUE_APP_API_URI}/course`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt
+        }
+      })
+      let jsonData = await result.json()
+      initCourses.value = jsonData
+    }
 
     const getPrograms = async () => {
         let result = await fetch(url, {
@@ -87,7 +101,8 @@ export default {
       if(status === 'Add'){
         formData.value = {
           status,
-          formTitle: 'Add New Program Data'
+          formTitle: 'Add New Program Data',
+          courses: initCourses.value
         }
       }else if(status === 'List'){
         modalData.value = data
@@ -96,13 +111,15 @@ export default {
         formData.value = {
           status,
           formTitle: `Update Program ${data.name} Data`,
-          program: data
+          program: data,
+          courses: initCourses.value
         }
       }else if(status === 'Show'){
         formData.value = {
           status,
           formTitle: `Detail Program ${data.name} Data`,
-          program: data
+          program: data,
+          courses: initCourses.value
         }
       }
 
@@ -115,6 +132,7 @@ export default {
 
     onMounted(() => {
       getPrograms()
+      getCourses()
       document.title = 'Program - SIM MBKM FTI'
       document.body.style.backgroundColor = "#fff";
     })

@@ -29,6 +29,7 @@ import SideMenu from '@/components/SideMenu.vue'
 import { ref } from '@vue/reactivity';
 import { checkAuth, getCookie } from "./utils/function";
 import { onMounted } from '@vue/runtime-core';
+import { useRouter } from 'vue-router'
 
 export default {
   components: {
@@ -36,18 +37,22 @@ export default {
   },
   emits: ['closeSideMenu'],
   setup(){
+    const router = useRouter()
     const role = ref('')
     const userData = ref('')
     const sideMenuStatus = ref(false)
     
     const initAuth = () => {
       checkAuth({ jwt: getCookie('jwt') }).then(authData => {
+        // console.log(authData)
         role.value = authData.role
         if(authData.user){
           userData.value = authData.user
           if(role.value === true) userData.value.role = "Head of Department"
           else if(role.value === false) userData.value.role = "Supervisor"
           else userData.value.role = role.value
+        }else{
+          router.push({ name: 'Login' })
         }
       })
     }
