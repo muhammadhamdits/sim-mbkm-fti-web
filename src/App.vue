@@ -16,6 +16,11 @@
     <router-link to="/admin/type">Type</router-link>
     <router-link to="/admin/course">Course</router-link>
   </div>
+  <div class="nav-center" v-else-if="role === 'Student'">
+    <router-link to="/student">Home</router-link>
+    <router-link to="/student/program">MyProgram</router-link>
+    <router-link to="/student/logbook">Logbook</router-link>
+  </div>
 
   <div class="content">
     <router-view/>

@@ -4,7 +4,12 @@
 
 <script>
 export default {
-  name: 'Logbook'
+  name: 'Logbook',
+  setup(){
+    onMounted(() => {
+      document.title = 'Home - SIM MBKM FTI'
+    })
+  }
 }
 </script>
 

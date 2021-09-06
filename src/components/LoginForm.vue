@@ -45,6 +45,7 @@ export default {
         this.$root.initAuth()
         // this.$root.role = jsonData.role
         if(jsonData.role === "Admin") this.$router.push({ name: 'AdminProgram' })
+        else if(jsonData.role === "Student") this.$router.push({ name: 'StudentHome' })
       }else{
         this.message = jsonData.message
       }

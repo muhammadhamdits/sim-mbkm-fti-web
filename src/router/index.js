@@ -6,6 +6,9 @@ import AdminProgram from '../views/Admin/Program.vue'
 import AdminAgency from '../views/Admin/Agency.vue'
 import AdminType from '../views/Admin/Type.vue'
 import AdminCourse from '../views/Admin/Course.vue'
+import StudentHome from '../views/Student/Home.vue'
+import StudentProgram from '../views/Student/Program.vue'
+import StudentLogbook from '../views/Student/Logbook.vue'
 
 // import 
 
@@ -39,6 +42,24 @@ const routes = [
     name: 'AdminCourse',
     component: AdminCourse,
     meta: { role: "Admin" }
+  },
+  {
+    path: '/student/',
+    name: 'StudentHome',
+    component: StudentHome,
+    meta: { role: "Student" }
+  },
+  {
+    path: '/student/program',
+    name: 'StudentProgram',
+    component: StudentProgram,
+    meta: { role: "Student" }
+  },
+  {
+    path: '/student/logbook',
+    name: 'StudentLogbook',
+    component: StudentLogbook,
+    meta: { role: "Student" }
   }
 ]
 
@@ -54,6 +75,8 @@ router.beforeEach( async (to, from, next) => {
   const authData = await checkAuth(data)
   if(authData.role === "Admin" && to.name !== 'Login') next()
   else if(authData.role === "Admin" && to.name === 'Login') next({ name: 'AdminProgram' })
+  else if(authData.role === "Student" && to.name !== 'Login') next()
+  else if(authData.role === "Student" && to.name === 'Login') next({ name: 'StudentHome' })
   else if(!authData.role && to.name !== 'Login') next({ name: 'Login' })
   else next()
 })
