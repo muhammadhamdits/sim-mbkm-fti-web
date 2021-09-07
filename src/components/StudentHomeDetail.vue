@@ -22,6 +22,7 @@
   <div class="badge-container">
     <div class="badge" v-for="course in courses" :key="course.id">{{ course.course_id }}</div>
   </div>
+  <br>
   <button class="register-button" @click="registerConfirm" v-if="notRegistered">
     <span class="material-icons">person_add_alt_1</span>
     REGISTER
@@ -90,7 +91,9 @@ export default {
         })
         let jsonData = await fetchResult.json()
         this.courses = jsonData
-      }
+      },
+      deep: true,
+      immediate: true
     }
   }
 }
@@ -149,34 +152,42 @@ p{
 }
 
 .register-button{
-  margin: 12px auto;
+  margin: 0 auto;
+  margin-bottom: 16px !important;
   cursor: pointer;
   outline: none;
   padding: 6px 8px;
   border: 1px solid #42b983;
   border-radius: 8px;
-  color: #fff;
+  color: #feffef;
   background-color: #42b983;
   font-size: 1.1em;
 }
 
 .register-button:hover{
   color: #42b983;
-  background-color: #fff;
+  background-color: #feffef;
 }
 
 .register-button-disabled{
+  margin-bottom: 16px !important;
   cursor: default;
   color: #42b983;
-  background-color: #fff;
+  background-color: #feffef;
 }
 
 .register-button-disabled:hover{
   color: #42b983;
-  background-color: #fff;
+  background-color: #feffef;
 }
 
 .register-button .material-icons{
   vertical-align: sub;
+}
+
+@media screen and (max-width: 600) {
+  /* .register-button{
+    margin-bottom: 100px !important;
+  } */
 }
 </style>
