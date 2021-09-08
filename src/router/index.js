@@ -9,6 +9,11 @@ import AdminCourse from '../views/Admin/Course.vue'
 import StudentHome from '../views/Student/Home.vue'
 import StudentProgram from '../views/Student/Program.vue'
 import StudentLogbook from '../views/Student/Logbook.vue'
+import HeadOfDeptDashboard from '../views/HeadOfDept/Dashboard.vue'
+import HeadOfDeptSubmissions from '../views/HeadOfDept/Submissions.vue'
+import SupervisorHome from '../views/Supervisor/Home.vue'
+import SupervisorLogbook from '../views/Supervisor/Logbook.vue'
+import ErrorPage from '../components/ErrorPage.vue'
 
 // import 
 
@@ -60,6 +65,35 @@ const routes = [
     name: 'StudentLogbook',
     component: StudentLogbook,
     meta: { role: "Student" }
+  },
+  {
+    path: '/headofdept',
+    name: 'HeadOfDeptDashboard',
+    component: HeadOfDeptDashboard,
+    meta: { role: true }
+  },
+  {
+    path: '/headofdept/submissions',
+    name: 'HeadOfDeptSubmissions',
+    component: HeadOfDeptSubmissions,
+    meta: { role: true }
+  },
+  {
+    path: '/supervisor',
+    name: 'SupervisorHome',
+    component: SupervisorHome,
+    meta: { role: false }
+  },
+  {
+    path: '/supervisor/logbook',
+    name: 'SupervisorLogbook',
+    component: SupervisorLogbook,
+    meta: { role: false }
+  },
+  {
+    path: '/error',
+    name: 'ErrorPage',
+    component: ErrorPage
   }
 ]
 
@@ -73,12 +107,17 @@ router.beforeEach( async (to, from, next) => {
   const data = { jwt: $cookies.get('jwt') }
   
   const authData = await checkAuth(data)
-  if(authData.role === "Admin" && to.name !== 'Login') next()
-  else if(authData.role === "Admin" && to.name === 'Login') next({ name: 'AdminProgram' })
-  else if(authData.role === "Student" && to.name !== 'Login') next()
-  else if(authData.role === "Student" && to.name === 'Login') next({ name: 'StudentHome' })
-  else if(!authData.role && to.name !== 'Login') next({ name: 'Login' })
-  else next()
+  if(authData.role === to.meta.role && to.name !== 'Login') next()
+  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'AdminProgram' })
+  else if(authData.role === to.meta.role && to.name !== 'Login') next()
+  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'StudentHome' })
+  else if(authData.role === to.meta.role && to.name !== 'Login') next()
+  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'HeadOfDeptDashboard' })
+  else if(authData.role === to.meta.role && to.name !== 'Login') next()
+  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'SupervisorHome' })
+  else if(!authData && to.name !== 'Login') next({ name: 'Login' })
+  else if(to.name === 'ErrorPage') next()
+  else next({ name: 'ErrorPage' })
 })
 
 export default router

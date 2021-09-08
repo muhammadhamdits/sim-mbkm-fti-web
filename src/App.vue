@@ -21,6 +21,14 @@
     <router-link to="/student/program">MyProgram</router-link>
     <router-link to="/student/logbook">Logbook</router-link>
   </div>
+  <div class="nav-center" v-else-if="userData.role === 'HeadOfDept'">
+    <router-link to="/headofdept">Dashboard</router-link>
+    <router-link to="/headofdept/submissions">Submissions</router-link>
+  </div>
+  <div class="nav-center" v-else-if="userData.role === 'Supervisor'">
+    <router-link to="/supervisor">Home</router-link>
+    <router-link to="/supervisor/logbook">Logbook</router-link>
+  </div>
 
   <div class="content">
     <router-view/>
@@ -53,7 +61,7 @@ export default {
         role.value = authData.role
         if(authData.user){
           userData.value = authData.user
-          if(role.value === true) userData.value.role = "Head of Department"
+          if(role.value === true) userData.value.role = "HeadOfDept"
           else if(role.value === false) userData.value.role = "Supervisor"
           else userData.value.role = role.value
         }else{
