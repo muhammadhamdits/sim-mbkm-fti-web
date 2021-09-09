@@ -108,16 +108,16 @@ router.beforeEach( async (to, from, next) => {
   
   const authData = await checkAuth(data)
   if(authData.role === to.meta.role && to.name !== 'Login') next()
-  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'AdminProgram' })
+  else if(authData.role === 'Admin' && to.name === 'Login') next({ name: 'AdminProgram' })
   else if(authData.role === to.meta.role && to.name !== 'Login') next()
-  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'StudentHome' })
+  else if(authData.role === 'Student' && to.name === 'Login') next({ name: 'StudentHome' })
   else if(authData.role === to.meta.role && to.name !== 'Login') next()
-  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'HeadOfDeptDashboard' })
+  else if(authData.role === true && to.name === 'Login') next({ name: 'HeadOfDeptDashboard' })
   else if(authData.role === to.meta.role && to.name !== 'Login') next()
-  else if(authData.role === to.meta.role && to.name === 'Login') next({ name: 'SupervisorHome' })
+  else if(authData.role === false && to.name === 'Login') next({ name: 'SupervisorHome' })
   else if(!authData && to.name !== 'Login') next({ name: 'Login' })
-  else if(to.name === 'ErrorPage') next()
-  else next({ name: 'ErrorPage' })
+  else if(authData.role !== to.meta.role) next({ name: 'ErrorPage' })
+  else next()
 })
 
 export default router

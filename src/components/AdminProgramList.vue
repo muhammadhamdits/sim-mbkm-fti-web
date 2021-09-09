@@ -15,8 +15,8 @@
         <tr v-for="(program, index) in initPrograms" :key="program.id">
           <td>{{ 1+index }}</td>
           <td @click="showProgramForm('Show', program)" class="item text-left">{{ program.name }}</td>
-          <td class="text-left responsive">{{ program.agency_id }}</td>
-          <td class="text-left responsive">{{ program.program_type_id }}</td>
+          <td class="text-left responsive">{{ program.agency.name }}</td>
+          <td class="text-left responsive">{{ program.program_type.name }}</td>
           <td>
             <button class="btn btn-warning" @click="showProgramForm('Edit', program)">
               <span class="material-icons">edit</span>

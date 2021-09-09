@@ -33,6 +33,7 @@ export default {
         }
       })
       let jsonData = await result.json()
+      // console.log(jsonData)
       programsData.value = jsonData
     }
 

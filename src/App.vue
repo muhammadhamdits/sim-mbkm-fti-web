@@ -72,6 +72,7 @@ export default {
 
     onMounted(() => {
       initAuth()
+      window.dispatchEvent(new Event('beforeinstallprompt'))
     })
 
     const toggleSideMenu = (status = false) => {

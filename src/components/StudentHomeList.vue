@@ -1,7 +1,7 @@
 <template>
   <div class="card" v-for="program in programs" :key="program.id" @click="showDetailProgram(program)" :ref="`cardDom${program.id}`">
     <h4>{{ program.name }}</h4>
-    <p>{{ program.program_type_id }} | {{ program.agency_id }}</p>
+    <p>{{ program.program_type.name }} | {{ program.agency.name }}</p>
     <h5><span class="material-icons">verified</span> {{ program.is_certified }}</h5>
   </div>
 </template>
@@ -40,13 +40,13 @@ h4, h5, h6, p{
   margin: 8px 0;
   padding: 8px;
   border-radius: 16px;
-  border: 1px solid #feffef;
-  background-color: #feffef;
+  border: 1px solid #42b983;
+  background-color: #fff;
   cursor: pointer;
 }
 
 .card:hover, .card.active{
-  border: 1px solid #2c7956;
+  background-color: #c2f7df;
   /* color: #42b983; */
 }
 

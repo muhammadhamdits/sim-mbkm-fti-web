@@ -170,12 +170,13 @@ export default {
 
 .rightContent{
   /* display: inline-block; */
+  border: 1px solid #42b983;
   flex: 60;
   margin-left: 6px;
   /* width: 65%; */
   border-radius: 8px;
   padding: 16px 48px;
-  background-color: #feffef;
+  background-color: #fff;
   overflow-y: scroll;
   /* height: 100px; */
 }

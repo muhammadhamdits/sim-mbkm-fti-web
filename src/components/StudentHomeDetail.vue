@@ -5,9 +5,9 @@
   </div>
   <h3>{{ program.name }}</h3>
   <label>Agency:</label>
-  <p>{{ program.agency_id }}</p>
+  <p>{{ program.agency.name }}</p>
   <label>Type:</label>
-  <p>{{ program.program_type_id }}</p>
+  <p>{{ program.program_type.name }}</p>
   <label>Start Date:</label>
   <p>{{ program.start_date }}</p>
   <label>End Date:</label>
@@ -20,7 +20,7 @@
   <p>{{ program.sks }}</p>
   <label>Can converted to courses:</label>
   <div class="badge-container">
-    <div class="badge" v-for="course in courses" :key="course.id">{{ course.course_id }}</div>
+    <div class="badge" v-for="course in program.courses" :key="course.id">{{ course.name }}</div>
   </div>
   <br>
   <button class="register-button" @click="registerConfirm" v-if="notRegistered">
@@ -81,16 +81,6 @@ export default {
         allPrograms.forEach(detailProgram => {
           if(detailProgram.program_id === newProgram.id) this.notRegistered = false
         })
-        let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/program/${newProgram.id}/course`, {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-            jwt: getCookie('jwt')
-          }
-        })
-        let jsonData = await fetchResult.json()
-        this.courses = jsonData
       },
       deep: true,
       immediate: true

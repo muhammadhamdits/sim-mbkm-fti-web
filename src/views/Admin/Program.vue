@@ -71,7 +71,7 @@ export default {
         }
       })
       let jsonData = await result.json()
-
+      // console.log(jsonData)
       initPrograms.value = jsonData
     }
 
