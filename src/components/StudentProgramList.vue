@@ -25,6 +25,7 @@ export default {
   },
   methods: {
     showProgramDetail(program){
+      // console.log(program.program)
       this.$emit('statusChange', 'Detail', program)
     }
   }

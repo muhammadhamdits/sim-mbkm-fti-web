@@ -37,11 +37,9 @@ export default {
       programsData.value = jsonData
     }
 
-    const updateStatus = (state, data) => {
-      if(state === 'Detail'){
-        programData.value = data
-        status.value = state
-      }
+    const updateStatus = (state, data = {}) => {
+      if(state === 'Detail') programData.value = data
+      status.value = state
     }
 
     onMounted(() => {

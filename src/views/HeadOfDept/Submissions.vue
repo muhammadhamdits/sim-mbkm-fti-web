@@ -1,38 +1,73 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-25">
-        <div class="card">
+      <div class="col-25" v-if="listStatus">
+        <div class="card" v-for="submission in submissions" :key="submission.student_id + submission.program_id" @click="updateStatus('Detail', submission)" :ref="`cardDom${submission.student_id}+${submission.program_id}`">
           <div class="card-body">
-            <h4>Judul Program</h4>
-            <h5>By Student Name</h5>
-            <h6>Type | Agency</h6>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body">
-            <h4>Judul Program</h4>
-            <h5>By Student Name</h5>
-            <h6>Type | Agency</h6>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body">
-            <h4>Judul Program</h4>
-            <h5>By Student Name</h5>
-            <h6>Type | Agency</h6>
+            <h4>{{ submission.program.name }}</h4>
+            <h5>by {{ submission.student.name }}</h5>
+            <h6>{{ submission.program.program_type.name }} | {{ submission.program.agency.name }}</h6>
           </div>
         </div>
       </div>
-      <div class="col-75">
+      <div class="col-75" v-if="detailStatus">
         <div class="row">
           <div class="col-3">
             <div class="card">
               <div class="card-header">
-                Nama Program
+                Program Detail
               </div>
               <div class="card-body">
-                Program Detail
+                <div class="data-group">
+                  <p class="label">Program Name:</p>
+                  <p class="value">{{ submissionDetail.program.name }}</p>
+                </div>
+                <div class="data-group">
+                  <p class="label">Agency:</p>
+                  <p class="value">{{ submissionDetail.program.agency.name }}</p>
+                </div>
+                <div class="data-group">
+                  <p class="label">Program Type:</p>
+                  <p class="value">{{ submissionDetail.program.program_type.name }}</p>
+                </div>
+                <div class="data-group">
+                  <p class="label">Description:</p>
+                  <p class="value">{{ submissionDetail.program.description }}</p>
+                </div>
+                <div class="data-group">
+                  <p class="label">Start Date:</p>
+                  <p class="value">{{ submissionDetail.program.start_date }}</p>
+                </div>
+                <div class="data-group">
+                  <p class="label">End Date:</p>
+                  <p class="value">{{ submissionDetail.program.end_date }}</p>
+                </div>
+                <div class="data-group">
+                  <p class="label">Minimum Semester:</p>
+                  <p class="value">{{ submissionDetail.program.min_semester }}</p>
+                </div>
+                <div class="data-group">
+                  <p class="label">SKS Total:</p>
+                  <p class="value">{{ submissionDetail.program.sks }}</p>
+                </div>
+                <div class="checkBoxContainer">
+                  <label class="checkbox certiFied" disabled>
+                    <div v-if="submissionDetail.program.is_certified">
+                      <span class="material-icons">verified</span> Certified
+                    </div>
+                    <div v-else>
+                      <span class="material-icons">unpublished</span> Not Certified
+                    </div>
+                  </label>
+                  <label class="checkbox remoTe" disabled>
+                    <div v-if="submissionDetail.program.is_remote">
+                      <span class="material-icons">wifi_tethering</span> Remote
+                    </div>
+                    <div v-else>
+                      <span class="material-icons">wifi_tethering_off</span> On the Spot
+                    </div>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -42,12 +77,27 @@
                 <div class="card">
                   <div class="card-header">
                     Information
+                    <span class="material-icons" @click="editInfo" v-if="!editStatus">edit</span>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body" v-if="editStatus">
                     <h6>Status:</h6>
-                    <h5>Accepted</h5>
+                    <select v-model="submissionDetail.status">
+                      <option value="0">Proposed</option>
+                      <option value="1">Accepted</option>
+                      <option value="2">Rejected</option>
+                    </select>
                     <h6>Supervisor:</h6>
-                    <h5>Husnil Kamil</h5>
+                    <select>
+                      <option value="0">Proposed</option>
+                      <option value="1">Accepted</option>
+                      <option value="2">Rejected</option>
+                    </select>
+                  </div>
+                  <div class="card-body" v-else>
+                    <h6>Status:</h6>
+                    <h5>{{ submissionDetail.status }}</h5>
+                    <h6>Supervisor:</h6>
+                    <h5>{{ submissionDetail.supervisor }}</h5>
                   </div>
                 </div>
               </div>
@@ -72,18 +122,64 @@
           </div>
         </div>
       </div>
+      <div class="col-75" v-else>
+        <div class="card">
+          Select program on the left menu first....
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, ref } from '@vue/runtime-core'
+import { getCookie } from '../../utils/function'
+
 export default {
   name: 'HeadOfDeptSubmissions',
   setup(){
-    onMounted(() => {
+    const submissions = ref([])
+    const submissionDetail = ref({})
+    const listStatus = ref(true)
+    const detailStatus = ref(false)
+    const editStatus = ref(false)
+
+    const getAllSubmissions = async () => {
+      let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student-program`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: getCookie('jwt')
+        }
+      })
+      let jsonData = await fetchResult.json()
+      submissions.value = jsonData
+      // console.log(submissions.value)
+    }
+
+    onMounted(async () => {
       document.title = 'Submissions - SIM MBKM FTI'
+      await getAllSubmissions()
     })
+
+    return { submissions, submissionDetail, listStatus, detailStatus, editStatus }
+  },
+  methods: {
+    updateStatus(state, data){
+      if(state === 'Detail'){
+        document.getElementsByClassName('card').forEach(element => {
+          element.classList.remove('active')
+        })
+        this.$refs[`cardDom${data.student_id}+${data.program_id}`].classList.add('active')
+        this.detailStatus = true
+        this.editStatus = false
+        this.submissionDetail = data
+      }
+    },
+    editInfo(){
+      this.editStatus = true
+    }
   }
 }
 </script>
@@ -92,6 +188,21 @@ export default {
 h2, h3, h4, h5, h6{
   text-align: left;
   margin: 2px;
+}
+
+select{
+  background-color: #fff;
+  display: block;
+  padding: 10px 6px;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 8px;
+  color: #444;
+}
+
+.col-2 h5{
+ margin-bottom: 8px;
 }
 
 .text-left{
@@ -134,6 +245,11 @@ h2, h3, h4, h5, h6{
   border-radius: 8px;
 }
 
+.col-25 .card:hover, .card.active{
+  cursor: pointer;
+  background-color: #c2f7df;
+}
+
 .card-header{
   /* border-radius: 8px; */
   padding: 4px 8px;
@@ -141,8 +257,60 @@ h2, h3, h4, h5, h6{
   background-color: #42b983;
 }
 
+.card-header .material-icons{
+  /* vertical-align: middle; */
+  font-size: 0.9em;
+  cursor: pointer;
+  float: right;
+}
+
+.card-header .material-icons:hover{
+  font-size: 1em;
+}
+
 .card-body{
   padding: 8px 12px;
+}
+
+.data-group{
+  margin: 8px 4px 20px 4px;
+  text-align: left;
+}
+
+.data-group .label{
+  font-weight: 600;
+  font-size: 0.72em;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.data-group .value{
+  font-size: 1em;
+  margin: 0;
+}
+
+.checkBoxContainer{
+  margin-top: -4px;
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  align-items: left;
+}
+
+.checkbox{
+  font-size: 0.7em;
+  color: #42b983;
+  border: 1px solid #42b983;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-right: 8px;
+  text-align: center;
+}
+
+.checkbox .material-icons{
+  vertical-align: middle;
+  margin: 0;
 }
 
 @media screen and (max-width: 600px) {
