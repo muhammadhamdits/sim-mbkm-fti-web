@@ -1,4 +1,7 @@
 <template>
+  <Modal @closeModal="closeModal" v-if="showModal">
+    <h3>{{ modalMessage }}</h3>
+  </Modal>
   <div class="container">
     <div class="row">
       <div class="col-25">
@@ -79,10 +82,18 @@
                     Courses
                   </div>
                   <div class="card-body">
-                    <h6>Status:</h6>
-                    <h5>{{ studentProgramDetail.status_name }}</h5>
-                    <h6>Supervisor:</h6>
-                    <h5>{{ studentProgramDetail.supervisor }}</h5>
+                    <div class="list-wrapper" v-for="course in studentProgramDetail.courses" :key="course.course_id">
+                      <div class="list-left">
+                        <div class="item">{{ course.course.name }}</div>
+                        <div class="badge">{{ course.course.sks }} SKS</div>
+                        <div class="badge" v-if="course.is_accepted">Accepted</div>
+                        <div class="badge" v-else>Not Accepted</div>
+                      </div>
+                      <div class="list-right">
+                        <span class="material-icons badge-danger" @click="confirmCourse(false, course.course_id)"  v-if="course.is_accepted">close</span>
+                        <span class="material-icons badge-success" @click="confirmCourse(true, course.course_id)" v-else>check</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -98,18 +109,29 @@
 <script>
 import { onMounted, ref } from '@vue/runtime-core'
 import { getCookie } from '../../utils/function'
+import Modal from '@/components/Modal.vue'
+
 export default {
   name: 'SupervisorHome',
+  components: {
+    Modal
+  },
   setup(){
     const studentPrograms = ref([])
     const studentProgramDetail = ref({})
     const detailStatus = ref(false)
+    const showModal = ref(false)
+    const modalMessage = ref('')
+
+    const closeModal = () => {
+      showModal.value = false
+    }
 
     onMounted(() => {
       document.title = 'Home - SIM MBKM FTI'
     })
 
-    return { studentPrograms, studentProgramDetail, detailStatus }
+    return { studentPrograms, studentProgramDetail, detailStatus, showModal, modalMessage, closeModal }
   },
   methods:{
     async getAllPrograms(){
@@ -135,6 +157,24 @@ export default {
         // this.editStatus = false
         this.studentProgramDetail = data
       }
+    },
+    async confirmCourse(is_accepted, course_id){
+      let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student/${this.studentProgramDetail.student_id}/program/${this.studentProgramDetail.program_id}/course/${course_id}`, {
+        method: 'PUT',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: getCookie('jwt')
+        },
+        body: JSON.stringify({ is_accepted })
+      })
+      let jsonData = await fetchResult.json()
+      // console.log(jsonData)
+      this.modalMessage = jsonData.success
+      this.showModal = true
+      this.studentPrograms = await this.getAllPrograms()
+      let tempStudentProgramDetail = this.studentPrograms.find(tempStudentProgram => tempStudentProgram.program_id === this.studentProgramDetail.program_id && tempStudentProgram.student_id === this.studentProgramDetail.student_id)
+      this.studentProgramDetail = tempStudentProgramDetail
     }
   },
   async mounted(){
@@ -245,6 +285,78 @@ h2, h3, h4, h5, h6{
 .checkbox .material-icons{
   vertical-align: middle;
   margin: 0;
+}
+
+.list-wrapper{
+  display: flex;
+  /* margin: 4px 0; */
+  padding: 8px 0;
+  border-bottom: 1px solid #42b983;
+}
+
+.list-wrapper:last-child{
+  border: none;
+}
+
+.list-right{
+  flex: 1;
+}
+
+.list-left{
+  flex: 4;
+  text-align: left;
+}
+
+.list-left .item{
+  font-size: 1em;
+  /* text-align: left; */
+  /* align-items: left; */
+  display: inline-block;
+}
+
+.list-left .badge{
+  font-size: 0.8em;
+}
+
+.list-right{
+  text-align: right;
+  /* float: right; */
+}
+
+.badge{
+  margin: 0 4px;
+  font-size: 0.85em;
+  padding: 2px 4px;
+  display: inline-block;
+  background-color: #42b983;
+  color: #fff;
+  font-weight: 600;
+  border: 1px solid #42b983;
+  border-radius: 8px;
+}
+
+.badge-success{
+  background-color: #42b983;
+  color: #fff;
+  border: 1px solid #42b983;
+  padding: 2px 4px;
+  border-radius: 8px;
+  vertical-align: middle;
+  font-size: 1em;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.badge-danger{
+  background-color: firebrick;
+  color: #fff;
+  border: 1px solid firebrick;
+  padding: 2px 4px;
+  border-radius: 8px;
+  vertical-align: middle;
+  font-size: 1em;
+  font-weight: 900;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 600px) {

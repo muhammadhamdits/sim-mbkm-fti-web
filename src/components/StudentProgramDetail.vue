@@ -116,9 +116,9 @@
               <div class="badge">{{ course.course.sks }} SKS</div>
             </div>
             <div class="list-right">
-              <div class="badge" v-if="course.status">Accepted</div>
+              <div class="badge" v-if="course.is_accepted">Accepted</div>
               <div class="badge" v-else>Not Accepted</div>
-              <span class="material-icons" @click="removeCourse(course.course_id)">close</span>
+              <span class="material-icons" @click="removeCourse(course.course_id)" v-if="!course.is_accepted">close</span>
             </div>
           </div>
         </div>
