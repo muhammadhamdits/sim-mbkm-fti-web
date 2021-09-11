@@ -87,15 +87,17 @@
                       <option value="2">Rejected</option>
                     </select>
                     <h6>Supervisor:</h6>
-                    <select>
-                      <option value="0">Proposed</option>
-                      <option value="1">Accepted</option>
-                      <option value="2">Rejected</option>
+                    <select v-model="submissionDetail.lecturer_id">
+                      <option :value="lecturer.id" v-for="lecturer in lecturers" :key="lecturer.id">{{ lecturer.name }}</option>
                     </select>
+                    <div class="button-wrapper">
+                      <button @click="closeEditForm"><span class="material-icons">close</span></button>
+                      <button @click="submitEditForm"><span class="material-icons">save</span></button>
+                    </div>
                   </div>
                   <div class="card-body" v-else>
                     <h6>Status:</h6>
-                    <h5>{{ submissionDetail.status }}</h5>
+                    <h5>{{ submissionDetail.status_name }}</h5>
                     <h6>Supervisor:</h6>
                     <h5>{{ submissionDetail.supervisor }}</h5>
                   </div>
@@ -139,6 +141,7 @@ export default {
   name: 'HeadOfDeptSubmissions',
   setup(){
     const submissions = ref([])
+    const lecturers = ref([])
     const submissionDetail = ref({})
     const listStatus = ref(true)
     const detailStatus = ref(false)
@@ -155,15 +158,28 @@ export default {
       })
       let jsonData = await fetchResult.json()
       submissions.value = jsonData
-      // console.log(submissions.value)
+    }
+
+    const getAllLecturers = async () => {
+      let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/lecturers`, {
+        method: 'GET',
+        mode: 'cors',
+        headers:{
+          'Content-Type': 'application/json',
+          jwt: getCookie('jwt')
+        }
+      })
+      let jsonData = await fetchResult.json()
+      lecturers.value = jsonData
     }
 
     onMounted(async () => {
       document.title = 'Submissions - SIM MBKM FTI'
       await getAllSubmissions()
+      await getAllLecturers()
     })
 
-    return { submissions, submissionDetail, listStatus, detailStatus, editStatus }
+    return { submissions, lecturers, submissionDetail, listStatus, detailStatus, editStatus, getAllSubmissions }
   },
   methods: {
     updateStatus(state, data){
@@ -179,6 +195,28 @@ export default {
     },
     editInfo(){
       this.editStatus = true
+    },
+    closeEditForm(){
+      this.editStatus = false
+    },
+    async submitEditForm(){
+      let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student/${this.submissionDetail.student_id}/program/${this.submissionDetail.program_id}`, {
+        method: 'PUT',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: getCookie('jwt')
+        },
+        body: JSON.stringify({
+          status: this.submissionDetail.status,
+          lecturer_id: this.submissionDetail.lecturer_id
+        })
+      })
+      let jsonData = await fetchResult.json()
+      await this.getAllSubmissions()
+      document.getElementsByClassName('active')[0].click()
+      this.closeEditForm()
+      // console.log(jsonData)
     }
   }
 }
@@ -311,6 +349,31 @@ select{
 .checkbox .material-icons{
   vertical-align: middle;
   margin: 0;
+}
+
+.button-wrapper{
+  text-align: right;
+}
+
+.button-wrapper button{
+  outline: none;
+  border-radius: 4px;
+  padding: 2px 4px;
+  background-color: #42b983;
+  border: 1px solid #42b983;
+  color: #fff;
+  cursor: pointer;
+  /* float: right; */
+  margin: 4px;
+}
+
+.button-wrapper button:hover{
+  background-color: #fff;
+  color: #42b983;
+}
+
+.button-wrapper button .material-icons{
+  font-size: 1.2em;
 }
 
 @media screen and (max-width: 600px) {

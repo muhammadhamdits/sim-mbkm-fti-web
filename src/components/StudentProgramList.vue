@@ -4,7 +4,7 @@
       <div class="card-left">
         <h4>{{ program.program.name }}</h4>
         <p>Supervisor: {{ program.supervisor }}</p>
-        <p>Status: {{ program.status }}</p>
+        <p>Status: {{ program.status_name }}</p>
       </div>
       <div class="card-right">
         <h4>-</h4>
