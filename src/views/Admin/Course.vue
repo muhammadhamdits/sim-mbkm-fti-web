@@ -57,8 +57,8 @@ export default {
           jwt
         }
       })
+      // console.log(result)
       let jsonData = await result.json()
-
       initCourses.value = jsonData
     }
 

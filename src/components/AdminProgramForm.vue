@@ -30,24 +30,38 @@
       <label>Total SKS</label>
       <input type="number" v-model="sks">
       <p>{{ error.sks }}</p>
+      <label>Is Certified?</label>
+      <div style="display: block; width: 100%" @click="toggleCertified">
+        <span class="switch">
+          <input type="checkbox" v-model="is_certified">
+          <span class="slider round"></span>
+        </span>
+      </div>
+      <label>Is Remote?</label>
+      <div style="display: block; width: 100%" @click="toggleRemote">
+        <span class="switch">
+          <input type="checkbox" v-model="is_remote">
+          <span class="slider round"></span>
+        </span>
+      </div>
       <label>Courses</label>
       <select multiple class="multiple-select" v-model="courses">
         <option v-for="course in this.formData.courses" :value="course.id" :key="course.id">
           {{ course.name }}
         </option>
       </select>
-      <div class="checkBoxContainer">
-        <label class="checkbox certiFied" @click="toggleCertified">
-          <span class="material-icons" v-if="is_certified">verified</span> 
-          <span class="material-icons" v-else>unpublished</span> 
-          Is Certified?
-        </label>
-        <label class="checkbox remoTe" @click="toggleRemote">
-          <span class="material-icons" v-if="is_remote">wifi_tethering</span> 
-          <span class="material-icons" v-else>wifi_tethering_off</span> 
-          Is Remote?
-        </label>
-      </div>
+      <!-- <span class="material-icons" v-if="is_certified">verified</span> 
+      <span class="material-icons" v-else>unpublished</span>  -->
+      <!-- <div class="checkBoxContainer"> -->
+        <!-- <label class="checkbox certiFied" @click="toggleCertified"> -->
+          <!-- Is Certified? -->
+        <!-- </label> -->
+        <!-- <label class="checkbox remoTe" @click="toggleRemote"> -->
+          <!-- <span class="material-icons" v-if="is_remote">wifi_tethering</span>  -->
+          <!-- <span class="material-icons" v-else>wifi_tethering_off</span>  -->
+          <!-- Is Remote? -->
+        <!-- </label> -->
+      <!-- </div> -->
       <button class="float-left" @click="backWard">
         <span class="material-icons">arrow_back</span> Back
       </button>
@@ -210,15 +224,15 @@ export default {
     },
     toggleCertified(e){
       if(this.formData.status !== 'Show'){
-        if(this.is_certified) removeClass(e.target, "checkBoxActive")
-        else addClass(e.target, "checkBoxActive")
+        // if(this.is_certified) removeClass(e.target, "checkBoxActive")
+        // else addClass(e.target, "checkBoxActive")
         this.is_certified = !this.is_certified
       }
     },
     toggleRemote(e){
       if(this.formData.status !== 'Show'){
-        if(this.is_remote) removeClass(e.target, "checkBoxActive")
-        else addClass(e.target, "checkBoxActive")
+        // if(this.is_remote) removeClass(e.target, "checkBoxActive")
+        // else addClass(e.target, "checkBoxActive")
         this.is_remote = !this.is_remote
       }
     },
@@ -239,8 +253,8 @@ export default {
     }
   },
   mounted(){
-    this.getCourses()
     if(this.formData.status === 'Edit' || this.formData.status === 'Show'){
+      this.getCourses()
       this.name = this.formData.program.name, 
       this.agency_id = this.formData.program.agency_id, 
       this.program_type_id = this.formData.program.program_type_id, 
@@ -253,8 +267,8 @@ export default {
       this.is_remote = this.formData.program.is_remote
     }
     if(this.formData.status === 'Show') toggleFormElements(document, true)
-    if(this.is_certified) addClass(document.getElementsByClassName("certiFied")[0], "checkBoxActive")
-    if(this.is_remote) addClass(document.getElementsByClassName("remoTe")[0], "checkBoxActive")
+    // if(this.is_certified) addClass(document.getElementsByClassName("certiFied")[0], "checkBoxActive")
+    // if(this.is_remote) addClass(document.getElementsByClassName("remoTe")[0], "checkBoxActive")
   }
 }
 </script>
@@ -396,5 +410,68 @@ p{
 
 .checkbox-label{
   margin-bottom: 0;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #42b983;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #42b983;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 </style>

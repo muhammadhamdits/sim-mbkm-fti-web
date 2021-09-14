@@ -5,16 +5,20 @@
       <thead>
         <tr>
           <th>No</th>
+          <th class="text-left responsive">Code</th>
           <th class="text-left">Name</th>
-          <th>SKS</th>
+          <th class="text-left responsive">Type</th>
+          <!-- <th class="responsive">SKS</th> -->
           <th>Action</th>
         </tr>
       </thead>
       <tbody v-if="initCourses.length">
         <tr v-for="(course, index) in initCourses" :key="course.id">
           <td>{{ 1+index }}</td>
+          <td class="text-left responsive">{{ course.code }}</td>
           <td class="text-left">{{ course.name }}</td>
-          <td>{{ course.sks }}</td>
+          <td class="text-left responsive">{{ course.typeName }}</td>
+          <!-- <td class="responsive">{{ course.sks }}</td> -->
           <td>
             <button class="btn btn-warning" @click="showCourseForm('Edit', course)">
               <span class="material-icons">edit</span>
@@ -27,7 +31,7 @@
       </tbody>
       <tbody v-else>
         <tr>
-          <td colspan="4">No data available...</td>
+          <td colspan="6">No data available...</td>
         </tr>
       </tbody>
     </table>
@@ -125,6 +129,10 @@ th, td{
 @media screen and (max-width: 600px) {
   .float{
     bottom: 72px;
+  }
+
+  .responsive{
+    display: none;
   }
 }
 </style>
