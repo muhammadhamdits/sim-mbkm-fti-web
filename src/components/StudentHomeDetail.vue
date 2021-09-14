@@ -3,34 +3,37 @@
     <span class="material-icons">arrow_back</span> 
     Back
   </div>
-  <h3>{{ program.name }}</h3>
-  <label>Agency:</label>
-  <p>{{ program.agency.name }}</p>
-  <label>Type:</label>
-  <p>{{ program.program_type.name }}</p>
-  <label>Start Date:</label>
-  <p>{{ program.start_date }}</p>
-  <label>End Date:</label>
-  <p>{{ program.end_date }}</p>
-  <label>Description:</label>
-  <p>{{ program.description }}</p>
-  <label>Minimum Semester:</label>
-  <p>{{ program.min_semester }}</p>
-  <label>SKS Total:</label>
-  <p>{{ program.sks }}</p>
-  <label>Can converted to courses:</label>
-  <div class="badge-container">
-    <div class="badge" v-for="course in program.courses" :key="course.id">{{ course.name }}</div>
+  <div v-if="showRegistButton">
+    <h3>{{ program.name }}</h3>
+    <label>Agency:</label>
+    <p>{{ program.agency.name }}</p>
+    <label>Type:</label>
+    <p>{{ program.program_type.name }}</p>
+    <label>Start Date:</label>
+    <p>{{ program.start_date }}</p>
+    <label>End Date:</label>
+    <p>{{ program.end_date }}</p>
+    <label>Description:</label>
+    <p>{{ program.description }}</p>
+    <label>Minimum Semester:</label>
+    <p>{{ program.min_semester }}</p>
+    <label>SKS Total:</label>
+    <p>{{ program.sks }}</p>
+    <label>Can converted to courses:</label>
+    <div class="badge-container">
+      <div class="badge" v-for="course in program.courses" :key="course.id">{{ course.name }}</div>
+    </div>
   </div>
-  <br>
-  <button class="register-button" @click="registerConfirm" v-if="notRegistered">
-    <span class="material-icons">person_add_alt_1</span>
-    REGISTER
-  </button>
-  <button class="register-button register-button-disabled" v-else>
-    <span class="material-icons">person_add_alt_1</span>
-    ALREADY REGISTERED
-  </button>
+  <div v-if="showRegistButton">
+    <button class="register-button" @click="registerConfirm" v-if="notRegistered && state">
+      <span class="material-icons">person_add_alt_1</span>
+      REGISTER
+    </button>
+    <button class="register-button register-button-disabled" v-else-if="!notRegistered">
+      <span class="material-icons">person_add_alt_1</span>
+      ALREADY REGISTERED
+    </button>
+  </div>
 </template>
 
 <script>
@@ -40,16 +43,17 @@ import { onMounted } from '@vue/runtime-core'
 
 export default {
   name: 'StudentHomeDetail',
-  props: ['program'],
+  props: ['program', 'state'],
   emits: ['statusChange'],
   setup(){
     const showBackButton = ref(false)
     const notRegistered = ref(true)
+    const showRegistButton = ref(false)
     const courses = ref([])
 
     if(document.body.clientWidth <= 600) showBackButton.value = true
 
-    return { showBackButton, courses, notRegistered }
+    return { showBackButton, courses, notRegistered, showRegistButton }
   },
   methods: {
     backButton(){
@@ -76,11 +80,13 @@ export default {
   watch: {
     program: {
       handler: async function(newProgram, oldProgram){
+        this.showRegistButton = false
         this.notRegistered = true
         let allPrograms = await this.getAllPrograms()
         allPrograms.forEach(detailProgram => {
           if(detailProgram.program_id === newProgram.id) this.notRegistered = false
         })
+        this.showRegistButton = true
       },
       deep: true,
       immediate: true
@@ -127,18 +133,19 @@ p{
 .badge-container{
   display: block;
   width: 100%;
-  height: 28px;
+  margin-bottom: 16px;
+  /* height: 28px; */
 }
 
 .badge{
-  float: left;
+  /* float: left; */
   display: inline-block;
   padding: 4px 8px;
-  margin: 0 4px;
+  margin: 2px 4px;
   color: #2c7956;
   border: 1px solid #2c7956;
   border-radius: 16px;
-  background-color: #feffef;
+  background-color: #fff;
 }
 
 .register-button{
@@ -149,26 +156,26 @@ p{
   padding: 6px 8px;
   border: 1px solid #42b983;
   border-radius: 8px;
-  color: #feffef;
+  color: #fff;
   background-color: #42b983;
   font-size: 1.1em;
 }
 
 .register-button:hover{
   color: #42b983;
-  background-color: #feffef;
+  background-color: #fff;
 }
 
 .register-button-disabled{
   margin-bottom: 16px !important;
   cursor: default;
   color: #42b983;
-  background-color: #feffef;
+  background-color: #fff;
 }
 
 .register-button-disabled:hover{
   color: #42b983;
-  background-color: #feffef;
+  background-color: #fff;
 }
 
 .register-button .material-icons{

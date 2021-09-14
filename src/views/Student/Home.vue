@@ -10,7 +10,7 @@
         </StudentHomeList>
       </div>
       <div class="rightContent" ref="rightContentDom">
-        <StudentHomeDetail v-if="rightContentStatus" :program="rightContentData" @statusChange="updateStatus">
+        <StudentHomeDetail v-if="rightContentStatus" :program="rightContentData" @statusChange="updateStatus" :state="state">
         </StudentHomeDetail>
         <p v-else>Select program from left menu...</p>
       </div>
@@ -59,6 +59,7 @@ export default {
     const rightContentData = ref({})
     const modalData = ref({ status: false })
     const jwt = getCookie('jwt')
+    const state = ref(true)
 
     const loadPrograms = async () => {
       let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/program`, {
@@ -126,8 +127,28 @@ export default {
       modalData,
       updateStatus,
       closeModal,
-      registerProgram
+      registerProgram,
+      state
     }
+  },
+  methods: {
+    async getUserPrograms(){
+      let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student/${this.$root.userData.id}/program`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: getCookie('jwt')
+        }
+      })
+      let jsonData = await fetchResult.json()
+      jsonData.forEach(program => {
+        if(program.status < 4) this.state = false
+      })
+    }
+  },
+  mounted(){
+    this.getUserPrograms()
   }
 }
 </script>

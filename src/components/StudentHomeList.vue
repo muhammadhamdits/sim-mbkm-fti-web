@@ -37,7 +37,7 @@ h4, h5, h6, p{
 
 .card{
   display: block;
-  margin: 8px 0;
+  margin: 0 0 8px 0;
   padding: 8px;
   border-radius: 16px;
   border: 1px solid #42b983;
