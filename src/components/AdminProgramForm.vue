@@ -15,6 +15,12 @@
         <option :value="type.id" v-for="type in types" :key="type.id">{{ type.name }}</option>
       </select>
       <p>{{ error.program_type_id }}</p>
+      <label>Open Date</label>
+      <input type="date" v-model="open_date">
+      <p>{{ error.open_date }}</p>
+      <label>Close Date</label>
+      <input type="date" v-model="close_date">
+      <p>{{ error.close_date }}</p>
       <label>Start Date</label>
       <input type="date" v-model="start_date">
       <p>{{ error.start_date }}</p>
@@ -88,6 +94,8 @@ export default {
     const name = ref('')
     const agency_id = ref('')
     const program_type_id = ref('')
+    const open_date = ref('')
+    const close_date = ref('')
     const start_date = ref('')
     const end_date = ref('')
     const description = ref('')
@@ -137,6 +145,8 @@ export default {
       name, 
       agency_id, 
       program_type_id, 
+      open_date, 
+      close_date, 
       start_date, 
       end_date, 
       description, 
@@ -157,6 +167,7 @@ export default {
       this.$emit('statusChange', 'List', )
     },
     async submitData(e){
+      // console.log(this.courses)
       e.preventDefault()
       let fetchUrl = `${process.env.VUE_APP_API_URI}/program`
       let fetchMethod = 'POST'
@@ -176,6 +187,8 @@ export default {
           name: this.name, 
           agency_id: this.agency_id, 
           program_type_id: this.program_type_id, 
+          open_date: this.open_date, 
+          close_date: this.close_date, 
           start_date: this.start_date, 
           end_date: this.end_date, 
           description: this.description, 
@@ -187,7 +200,7 @@ export default {
         })
       })
       let jsonData = await result.json()
-
+      // console.log(jsonData)
       if(jsonData.success){
         let jsonModal = {
           status: true,
@@ -205,6 +218,8 @@ export default {
             if(error.key === 'name') this.error.name = error.message
             else if(error.key === 'agency_id') this.error.agency_id = error.message
             else if(error.key === 'program_type_id') this.error.program_type_id = error.message
+            else if(error.key === 'open_date') this.error.open_date = error.message
+            else if(error.key === 'close_date') this.error.close_date = error.message
             else if(error.key === 'start_date') this.error.start_date = error.message
             else if(error.key === 'end_date') this.error.end_date = error.message
             else if(error.key === 'description') this.error.description = error.message
@@ -247,7 +262,7 @@ export default {
       let jsonData = await res.json()
       let coursesId = []
       jsonData.forEach(value => {
-        coursesId.push(value.course_id)
+        if(!value.is_deleted) coursesId.push(value.course_id)
       })
       this.courses = coursesId
     }
@@ -258,6 +273,8 @@ export default {
       this.name = this.formData.program.name, 
       this.agency_id = this.formData.program.agency_id, 
       this.program_type_id = this.formData.program.program_type_id, 
+      this.open_date = this.formData.program.open_date, 
+      this.close_date = this.formData.program.close_date, 
       this.start_date = this.formData.program.start_date, 
       this.end_date = this.formData.program.end_date, 
       this.description = this.formData.program.description, 

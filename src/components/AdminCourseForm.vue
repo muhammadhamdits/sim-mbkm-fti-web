@@ -4,19 +4,22 @@
       <h3>{{ formData.formTitle }}</h3>
       <label>Code</label>
       <input type="text" v-model="code">
+      <p>{{ error.code }}</p>
       <label>Name</label>
       <input type="text" v-model="name">
       <p>{{ error.name }}</p>
       <label>SKS</label>
       <input type="number" v-model="sks">
+      <p>{{ error.sks }}</p>
       <label>Semsester</label>
       <input type="number" v-model="semester">
+      <p>{{ error.semester }}</p>
       <label>Type</label>
       <select v-model="type">
         <option value="0">Required</option>
         <option value="1">Optional</option>
       </select>
-      <p>{{ error.sks }}</p>
+      <p>{{ error.type }}</p>
       <button class="float-left" @click="backWard">
         <span class="material-icons">arrow_back</span> Back
       </button>
@@ -57,6 +60,7 @@ export default {
     },
     async submitData(e){
       e.preventDefault()
+      this.fetch.url = `${process.env.VUE_APP_API_URI}/course`
       if(this.formData.status === 'Edit'){
         this.fetch.url = `${this.fetch.url}/${this.formData.course.id}`
         this.fetch.method = 'PUT'
