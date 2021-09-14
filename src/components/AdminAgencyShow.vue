@@ -4,8 +4,14 @@
       <h3>Agency {{ agencyData.name }} Detail</h3>
       <label>Name:</label>
       <input type="text" v-model="agencyData.name" readonly>
+      <label>Sector:</label>
+      <input type="text" v-model="agencyData.sector" readonly>
+      <label>Description:</label>
+      <input type="text" v-model="agencyData.description" readonly>
       <label>Address:</label>
       <input type="text" v-model="agencyData.address" readonly>
+      <label>Website:</label>
+      <input type="text" v-model="agencyData.website" readonly>
       <button @click="backWard">
         <span class="material-icons">arrow_back</span> Back
       </button>

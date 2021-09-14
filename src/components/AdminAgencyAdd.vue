@@ -6,9 +6,18 @@
       <label>Name:</label>
       <input type="text" v-model="name">
       <p>{{ error.name }}</p>
+      <label>Description:</label>
+      <input type="text" v-model="description">
+      <p>{{ error.description }}</p>
       <label>Address:</label>
       <input type="text" v-model="address">
       <p>{{ error.address }}</p>
+      <label>Sector:</label>
+      <input type="text" v-model="sector">
+      <p>{{ error.sector }}</p>
+      <label>Website:</label>
+      <input type="text" v-model="website">
+      <p>{{ error.website }}</p>
       <button class="float-left" @click="backWard">
         <span class="material-icons">arrow_back</span> Back
       </button>
@@ -34,9 +43,15 @@ export default {
       id: '',
       name: '', 
       address: '',
+      description: '',
+      sector: '',
+      website: '',
       error: {
         name: '',
-        address: ''
+        address: '',
+        description: '',
+        sector: '',
+        website: ''
       }
     }
   },
@@ -45,6 +60,9 @@ export default {
       this.id = this.agencyData.id
       this.name = this.agencyData.name
       this.address = this.agencyData.address
+      this.description = this.agencyData.description
+      this.sector = this.agencyData.sector
+      this.website = this.agencyData.website
     }
   },
   methods: {
@@ -58,7 +76,10 @@ export default {
       const jwt = getCookie('jwt')
       let name = this.name
       let address = this.address
-      const data = { name, address }
+      let description = this.description
+      let sector = this.sector
+      let website = this.website
+      const data = { name, address, description, sector, website }
 
       const res = await fetch(url, {
         method: 'POST',
@@ -86,7 +107,10 @@ export default {
       const jwt = getCookie('jwt')
       let name = this.name
       let address = this.address
-      const data = { name, address }
+      let description = this.description
+      let sector = this.sector
+      let website = this.website
+      const data = { name, address, description, sector, website }
 
       const res = await fetch(url, {
         method: 'PUT',
