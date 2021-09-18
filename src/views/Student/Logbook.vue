@@ -56,10 +56,14 @@
       {{ alertMessage }}
     </div>
     <div class="modal-container" v-else>
-      Input your log activity here...
-      <input type="text" v-model="log">
-      <button><span class="material-icons" @click="closeModal">close</span></button>
-      <button><span class="material-icons" @click="submitLog">save</span></button>
+      <label>File</label>
+      <input type="file" @change="onFileChange" ref="file">
+      <label>Log Activity</label>
+      <textarea cols="30" rows="10" v-model="log"></textarea>
+      <div class="button-container">
+        <button><span class="material-icons" @click="closeModal">close</span></button>
+        <button><span class="material-icons" @click="submitLog">save</span></button>
+      </div>
     </div>
   </Modal>
 </template>
@@ -80,6 +84,7 @@ export default {
     const studentPrograms = ref([])
     const studentProgramData = ref({})
     const log = ref('')
+    const file = ref('')
     const logData = ref(false)
     const alertStatus = ref(false)
     const alertMessage = ref('')
@@ -104,25 +109,26 @@ export default {
       document.title = 'Home - SIM MBKM FTI'
     })
 
-    return { showLog, showModal, log, studentPrograms, studentProgramData, logData, alertStatus, alertMessage, newComment, showAddLogbook, closeModal, showLogbooks }
+    return { showLog, showModal, log, file, studentPrograms, studentProgramData, logData, alertStatus, alertMessage, newComment, showAddLogbook, closeModal, showLogbooks }
   },
   methods: {
     async submitLog(){
+      let formData = new FormData()
+      formData.append('log', this.log)
+      formData.append('file', this.file)
+      console.log(formData)
+
       let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student/${this.studentProgramData.student_id}/program/${this.studentProgramData.program_id}/logbook`, {
         method: 'POST',
         mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          jwt: getCookie('jwt'),
-          
-        },
-        body: JSON.stringify({ log: this.log })
+        body: formData
       })
       let jsonData= await fetchResult.json()
-      this.alertStatus = true
-      if(jsonData.success) this.alertMessage = jsonData.success
-      else this.alertMessage = "You already entered log activity for today. Input again tomorrow."
-      await this.getAllStudentPrograms()
+      console.log(jsonData)
+      // this.alertStatus = true
+      // if(jsonData.success) this.alertMessage = jsonData.success
+      // else this.alertMessage = "You already entered log activity for today. Input again tomorrow."
+      // await this.getAllStudentPrograms()
     },
     async getAllStudentPrograms(){
       // console.log(this.$root.userData.id)
@@ -162,6 +168,9 @@ export default {
       this.logData = false
       this.logData = this.studentProgram.logbooks.find(l => l.id === logId)
       // console.log(jsonData)
+    },
+    onFileChange(){
+      this.file = this.$refs.file.files[0]
     }
   },
   async mounted(){
@@ -175,7 +184,22 @@ p{
   margin: 0;
 }
 
-.modal-container input{
+.modal-container{
+  width: 480px;
+  text-align: left;
+}
+
+.modal-container label{
+  color: #444;
+  display: inline-block;
+  margin: 25px 0 15px;
+  font-size: 0.6em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.modal-container input, .modal-container textarea{
   margin: 8px 0;
   display: block;
   padding: 10px 6px;
@@ -200,6 +224,11 @@ p{
 
 .modal-container button:hover{
   background-color: #3ba374;
+}
+
+.button-container{
+  margin: 16px 0 0 0;
+  text-align: right;
 }
 
 .input-container{
@@ -356,6 +385,9 @@ p.comment{
 @media screen and (max-width: 600px) {
   .float{
     bottom: 72px;
+  }
+  .modal-container{
+    width: fit-content;
   }
 }
 </style>

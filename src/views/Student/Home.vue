@@ -143,7 +143,7 @@ export default {
       })
       let jsonData = await fetchResult.json()
       jsonData.forEach(program => {
-        if(program.status < 4) this.state = false
+        if(program.status < 4 && program.status != 2) this.state = false
       })
     }
   },
