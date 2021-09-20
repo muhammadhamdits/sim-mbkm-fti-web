@@ -4,8 +4,8 @@
       <div class="col-25" v-if="listStatus">
         <div class="card" v-for="submission in submissions" :key="submission.student_id + submission.program_id" @click="updateStatus('Detail', submission)" :ref="`cardDom${submission.student_id}+${submission.program_id}`">
           <div class="card-body">
-            <h4>{{ submission.program.name }}</h4>
-            <h5>by {{ submission.student.name }}</h5>
+            <h4>{{ submission.student.name }}</h4>
+            <h5>{{ submission.program.name }}</h5>
             <h6>{{ submission.program.program_type.name }} | {{ submission.program.agency.name }}</h6>
           </div>
         </div>
@@ -111,12 +111,24 @@
                     Files
                   </div>
                   <div class="card-body">
-                    <h6>Accepted File:</h6>
-                    <h5>Ini File</h5>
-                    <h6>Completed File:</h6>
-                    <h5>Ini File</h5>
-                    <h6>Transcript File:</h6>
-                    <h5>Ini File</h5>
+                    <h5>Accepted File:</h5>
+                    <a :href="apiUri+'/student/'+submissionDetail.student_id+'/program/'+submissionDetail.program_id+'/accepted_file/download'" :download="submissionDetail.accepted_file" v-if="submissionDetail.accepted_file" class="download-link">
+                      <span class="material-icons file-download">save_alt</span>
+                      Download File
+                    </a>
+                    <p v-else>Not yet uploaded..</p>
+                    <h5>Completed File:</h5>
+                    <a :href="apiUri+'/student/'+submissionDetail.student_id+'/program/'+submissionDetail.program_id+'/completed_file/download'" :download="submissionDetail.completed_file" v-if="submissionDetail.completed_file" class="download-link">
+                      <span class="material-icons file-download">save_alt</span>
+                      Download File
+                    </a>
+                    <p v-else>Not yet uploaded..</p>
+                    <h5>Transcript File:</h5>
+                    <a :href="apiUri+'/student/'+submissionDetail.student_id+'/program/'+submissionDetail.program_id+'/transcript_file/download'" :download="submissionDetail.transcript_file" v-if="submissionDetail.transcript_file" class="download-link">
+                      <span class="material-icons file-download">save_alt</span>
+                      Download File
+                    </a>
+                    <p v-else>Not yet uploaded..</p>
                   </div>
                 </div>
               </div>
@@ -146,6 +158,7 @@ export default {
     const listStatus = ref(true)
     const detailStatus = ref(false)
     const editStatus = ref(false)
+    const apiUri = ref('')
 
     const getAllSubmissions = async () => {
       let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student-program`, {
@@ -177,9 +190,10 @@ export default {
       document.title = 'Submissions - SIM MBKM FTI'
       await getAllSubmissions()
       await getAllLecturers()
+      apiUri.value = process.env.VUE_APP_API_URI
     })
 
-    return { submissions, lecturers, submissionDetail, listStatus, detailStatus, editStatus, getAllSubmissions }
+    return { submissions, lecturers, submissionDetail, listStatus, detailStatus, editStatus, apiUri, getAllSubmissions }
   },
   methods: {
     updateStatus(state, data){
@@ -374,6 +388,20 @@ select{
 
 .button-wrapper button .material-icons{
   font-size: 1.2em;
+}
+
+.download-link{
+  color: #2c815b;
+  text-decoration: none;
+  text-align: left;
+}
+
+.download-link:hover{
+  color: #42b983;
+}
+
+.file-download{
+  text-align: left;
 }
 
 @media screen and (max-width: 600px) {

@@ -7,8 +7,8 @@
       <div class="col-25">
         <div class="card" v-for="studentProgram in studentPrograms" :key="studentProgram.student_id+'-'+studentProgram.program_id" @click="updateStatus('Detail', studentProgram)" :ref="`cardDom${studentProgram.student_id}+${studentProgram.program_id}`">
           <div class="card-body">
-            <h4>{{ studentProgram.program.name }}</h4>
-            <h5>By {{ studentProgram.student.name }}</h5>
+            <h4>{{ studentProgram.student.name }}</h4>
+            <h5>{{ studentProgram.program.name }}</h5>
             <h6>{{ studentProgram.program.program_type.name }} | {{ studentProgram.program.agency.name }}</h6>
           </div>
         </div>

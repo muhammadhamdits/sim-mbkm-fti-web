@@ -115,6 +115,7 @@ router.beforeEach( async (to, from, next) => {
   else if(authData.role === true && to.name === 'Login') next({ name: 'HeadOfDeptDashboard' })
   else if(authData.role === to.meta.role && to.name !== 'Login') next()
   else if(authData.role === false && to.name === 'Login') next({ name: 'SupervisorHome' })
+  else if(authData.role === true && to.meta.role === false) next()
   else if(!authData && to.name !== 'Login') next({ name: 'Login' })
   else if(authData.role !== to.meta.role) next({ name: 'ErrorPage' })
   else next()

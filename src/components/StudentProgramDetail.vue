@@ -86,15 +86,54 @@
         <div class="card-content">
           <div class="data-group">
             <p class="label">Accepted File:</p>
-            <p class="value">{{ programData.accepted_mark_file }}</p>
+            <a :href="apiUri+'/student/'+programData.student_id+'/program/'+programData.program_id+'/accepted_file/download'" :download="programData.accepted_file" v-if="programData.accepted_file" class="download-link">
+              <span class="material-icons file-download">save_alt</span>
+              Download File
+            </a>
+            <table v-else style="width: 100%">
+              <tr>
+                <td>
+                  <input type="file" @change="onFileChange('transcript_file')" ref="transcript_file">
+                </td>
+                <td class="text-right" ref="transcript_file_save_button" style="display: none">
+                  <span class="material-icons save-button" @click="uploadFile('transcript_file')">save</span>
+                </td>
+              </tr>
+            </table>
           </div>
           <div class="data-group">
             <p class="label">Completed File:</p>
-            <p class="value">{{ programData.completed_mark_file }}</p>
+            <a :href="apiUri+'/student/'+programData.student_id+'/program/'+programData.program_id+'/completed_file/download'" :download="programData.completed_file" v-if="programData.completed_file" class="download-link">
+              <span class="material-icons file-download">save_alt</span>
+              Download File
+            </a>
+            <table v-else style="width: 100%">
+              <tr>
+                <td>
+                  <input type="file" @change="onFileChange('completed_file')" ref="completed_file">
+                </td>
+                <td class="text-right" ref="completed_file_save_button" style="display: none">
+                  <span class="material-icons save-button" @click="uploadFile('completed_file')">save</span>
+                </td>
+              </tr>
+            </table>
           </div>
           <div class="data-group">
             <p class="label">Transcript File:</p>
-            <p class="value">{{ programData.transcript_file }}</p>
+            <a :href="apiUri+'/student/'+programData.student_id+'/program/'+programData.program_id+'/transcript_file/download'" :download="programData.transcript_file" v-if="programData.transcript_file" class="download-link">
+              <span class="material-icons file-download">save_alt</span>
+              Download File
+            </a>
+            <table v-else style="width: 100%">
+              <tr>
+                <td>
+                  <input type="file" @change="onFileChange('transcript_file')" ref="transcript_file">
+                </td>
+                <td class="text-right" ref="transcript_file_save_button" style="display: none">
+                  <span class="material-icons save-button" @click="uploadFile('transcript_file')">save</span>
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
@@ -140,8 +179,13 @@ export default {
     const coursesAddState = ref(false)
     const newCourses = ref([])
     const restCourses = ref([])
+    const apiUri = ref('')
 
-    return { coursesAddState, newCourses, restCourses }
+    onMounted(() => {
+      apiUri.value = process.env.VUE_APP_API_URI
+    })
+
+    return { coursesAddState, newCourses, restCourses, apiUri }
   },
   methods: {
     backButton(){
@@ -191,6 +235,24 @@ export default {
       let jsonData = await fetchResult.json()
       // console.log(jsonData)
       this.$emit('statusChange', 'Add', this.programData, jsonData)
+    },
+    onFileChange(field){
+        let saveButtonElement = this.$refs[`${field}_save_button`]
+        saveButtonElement.style.display = ''
+    },
+    async uploadFile(field){
+      let file = this.$refs[field].files[0]
+
+      let formData = new FormData()
+      formData.append(field, file)
+
+      let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student/${this.programData.student_id}/program/${this.programData.program_id}`, {
+        method: 'PUT',
+        mode: 'cors',
+        body: formData
+      })
+      let jsonData = await fetchResult.json()
+      console.log(jsonData)
     }
   },
   async mounted(){
@@ -399,6 +461,27 @@ select[multiple]:focus{
   font-size: 1em;
   font-weight: 900;
   cursor: pointer;
+}
+
+.text-right{
+  text-align: right;
+}
+
+.download-link{
+  color: #2c815b;
+  text-decoration: none;
+}
+
+.download-link:hover{
+  color: #42b983;
+}
+
+.save-button{
+  cursor: pointer;
+}
+
+.save-button:hover{
+  color: #42b983;
 }
 
 @media screen and (max-width: 600px) {

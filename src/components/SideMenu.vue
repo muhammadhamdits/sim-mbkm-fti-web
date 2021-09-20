@@ -8,6 +8,12 @@
           <p>{{ userData.role }} | {{ userData.username || userData.nim || userData.nip }}</p>
         </div>
         <div class="userMenu">
+          <p class="userMenuItem text-left" @click="redirectUser('supervisor')" v-if="$route.path.split('/')[1] !== 'supervisor'">
+            <span class="material-icons float-left">supervisor_account</span> Supervisor Page
+          </p>
+          <p class="userMenuItem text-left" @click="redirectUser('headofdept')" v-else>
+            <span class="material-icons float-left">assignment_ind</span> Head of Dept Page
+          </p>
           <p class="userMenuItem text-left" @click="logOutUser">
             <span class="material-icons float-left">logout</span> Logout
           </p>
@@ -34,6 +40,11 @@ export default {
       this.$root.role = ''
       this.$root.userData = ''
       this.$router.push({ name: 'Login' })
+      this.$emit('closeSideMenu')
+    },
+    redirectUser(target){
+      if(target === 'supervisor') this.$router.push({ name: 'SupervisorHome' })
+      else this.$router.push({ name: 'HeadOfDeptDashboard' })
       this.$emit('closeSideMenu')
     }
   }

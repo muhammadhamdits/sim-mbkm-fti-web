@@ -8,8 +8,19 @@
         </div>
         <div class="card-body">
           <div class="card-content" v-for="log in studentProgramData.logbooks" :key="log.id" @click="showComments(log)" :ref="`log-${log.id}`">
-            <p class="p-content">{{ log.log }}</p>
-            <p class="p-sub-content">{{ log.date }}</p>
+            <table style="width: 100%">
+              <tr>
+                <td>
+                  <p class="p-content">{{ log.log }}</p>
+                  <p class="p-sub-content">{{ log.date }}</p>
+                </td>
+                <td style="text-align: right" v-if="log.file">
+                  <a :href="apiUri+'/logbook/'+log.id+'/download'" :download="log.file">
+                    <span class="material-icons file-download">save_alt</span>
+                  </a>
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
@@ -89,6 +100,7 @@ export default {
     const alertStatus = ref(false)
     const alertMessage = ref('')
     const newComment = ref('')
+    const apiUri = ref('')
 
     const showAddLogbook = () => {
       showModal.value = true
@@ -107,16 +119,18 @@ export default {
 
     onMounted(() => {
       document.title = 'Home - SIM MBKM FTI'
+      apiUri.value = process.env.VUE_APP_API_URI
     })
 
-    return { showLog, showModal, log, file, studentPrograms, studentProgramData, logData, alertStatus, alertMessage, newComment, showAddLogbook, closeModal, showLogbooks }
+    return { showLog, showModal, log, file, studentPrograms, studentProgramData, logData, alertStatus, alertMessage, newComment, apiUri, showAddLogbook, closeModal, showLogbooks }
   },
   methods: {
     async submitLog(){
       let formData = new FormData()
+      let file = this.file.files[0]
       formData.append('log', this.log)
-      formData.append('file', this.file)
-      console.log(formData)
+      formData.append('file', file)
+      // console.log(file)
 
       let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student/${this.studentProgramData.student_id}/program/${this.studentProgramData.program_id}/logbook`, {
         method: 'POST',
@@ -124,11 +138,11 @@ export default {
         body: formData
       })
       let jsonData= await fetchResult.json()
-      console.log(jsonData)
-      // this.alertStatus = true
-      // if(jsonData.success) this.alertMessage = jsonData.success
-      // else this.alertMessage = "You already entered log activity for today. Input again tomorrow."
-      // await this.getAllStudentPrograms()
+      // console.log(jsonData)
+      this.alertStatus = true
+      if(jsonData.success) this.alertMessage = jsonData.success
+      else this.alertMessage = "You already entered log activity for today. Input again tomorrow."
+      await this.getAllStudentPrograms()
     },
     async getAllStudentPrograms(){
       // console.log(this.$root.userData.id)
@@ -170,8 +184,12 @@ export default {
       // console.log(jsonData)
     },
     onFileChange(){
-      this.file = this.$refs.file.files[0]
+      this.file = this.$refs.file
     }
+    // async downloadFile(log){
+    //   let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/logbook/${log.id}/download`)
+    //   console.log(fetchResult)
+    // }
   },
   async mounted(){
     await this.getAllStudentPrograms()
@@ -375,6 +393,17 @@ p.comment{
 
 .card .card-header .material-icons:hover{
   background-color: #3ba374;
+}
+
+.file-download{
+  color: #42b983;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.file-download:hover{
+  background-color: #42b983;
+  color: #fff;
 }
 
 ::-webkit-scrollbar {

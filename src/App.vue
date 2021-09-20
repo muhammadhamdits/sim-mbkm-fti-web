@@ -21,11 +21,11 @@
     <router-link to="/student/program">MyProgram</router-link>
     <router-link to="/student/logbook">Logbook</router-link>
   </div>
-  <div class="nav-center" v-else-if="userData.role === 'HeadOfDept'">
+  <div class="nav-center" v-else-if="userData.role === 'HeadOfDept' && $route.path.split('/')[1] !== 'supervisor'">
     <router-link to="/headofdept">Dashboard</router-link>
     <router-link to="/headofdept/submissions">Submissions</router-link>
   </div>
-  <div class="nav-center" v-else-if="userData.role === 'Supervisor'">
+  <div class="nav-center" v-else-if="userData.role === 'Supervisor' || userData.role === 'HeadOfDept'">
     <router-link to="/supervisor">Home</router-link>
     <router-link to="/supervisor/logbook">Logbook</router-link>
   </div>

@@ -5,7 +5,7 @@
         <div class="card">
           <div class="card-body">
             <h3>Proposed</h3>
-            <h2>32</h2>
+            <h2>{{ submissions.filter((submission) => submission.status === 0).length }}</h2>
           </div>
         </div>
       </div>
@@ -13,7 +13,7 @@
         <div class="card">
           <div class="card-body">
             <h3>Accepted</h3>
-            <h2>37</h2>
+            <h2>{{ submissions.filter((submission) => submission.status === 1).length }}</h2>
           </div>
         </div>
       </div>
@@ -21,7 +21,7 @@
         <div class="card">
           <div class="card-body">
             <h3>Rejected</h3>
-            <h2>28</h2>
+            <h2>{{ submissions.filter((submission) => submission.status === 2).length }}</h2>
           </div>
         </div>
       </div>
@@ -29,7 +29,7 @@
         <div class="card">
           <div class="card-body">
             <h3>Active</h3>
-            <h2>8</h2>
+            <h2>{{ submissions.filter((submission) => submission.status === 3).length }}</h2>
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@
         <div class="card">
           <div class="card-body">
             <h3>Completed</h3>
-            <h2>68</h2>
+            <h2>{{ submissions.filter((submission) => submission.status === 4).length }}</h2>
           </div>
         </div>
       </div>
@@ -60,13 +60,35 @@
 </template>
 
 <script>
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, ref } from '@vue/runtime-core'
+import { getCookie } from '../../utils/function'
+
 export default {
   name: 'HeadOfDeptDashboard',
   setup(){
-    onMounted(() => {
+    const submissions = ref([])
+
+    const getAllSubmissions = async () => {
+      let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student-program`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: getCookie('jwt')
+        }
+      })
+      let jsonData = await fetchResult.json()
+      submissions.value = jsonData
+    }
+
+    onMounted(async () => {
+      await getAllSubmissions()
+
+      // console.log(submissions.value)
       document.title = 'Dashboard - SIM MBKM FTI'
     })
+
+    return { submissions }
   }
 }
 </script>
