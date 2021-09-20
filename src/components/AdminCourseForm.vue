@@ -26,7 +26,7 @@
       <button class="float-right" @click="submitData" v-if="formData.status === 'Add'">
         <span class="material-icons">save</span> {{ formData.buttonTitle }}
       </button>
-      <button class="float-right" @click="submitData" v-else>
+      <button class="float-right" @click="submitData" v-else-if="formData.status === 'Edit'">
         <span class="material-icons">save</span> {{ formData.buttonTitle }}
       </button>
     </form>
@@ -36,6 +36,7 @@
 <script>
 import { getCookie } from "@/utils/function"
 import { ref } from '@vue/reactivity'
+import { toggleFormElements } from '../utils/function'
 
 export default {
   name: 'AdminCourseForm',
@@ -106,13 +107,15 @@ export default {
     }
   },
   mounted(){
-    if(this.formData.status === 'Edit'){
+    if(this.formData.status === 'Edit' || this.formData.status === 'Show'){
       this.code = this.formData.course.code
       this.name = this.formData.course.name
       this.sks = this.formData.course.sks
       this.type = this.formData.course.type
       this.semester = this.formData.course.semester
     }
+
+    if(this.formData.status === 'Show') toggleFormElements(document, true)
   }
 }
 </script>
@@ -147,6 +150,10 @@ input, button, select{
   border-bottom: 1px solid #ddd;
   border-radius: 8px;
   color: #555;
+}
+
+input[disabled]{
+  background-color: #fff;
 }
 
 button{

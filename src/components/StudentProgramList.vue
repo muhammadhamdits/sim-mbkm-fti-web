@@ -1,6 +1,9 @@
 <template>
   <div class="container">
-    <div class="card" v-for="program in programsData" :key="program.student_id+'0'+program.program_id" @click="showProgramDetail(program)">
+    <div class="emptyMessage" v-if="!programsData.length">
+      You dont have any program registered....
+    </div>
+    <div v-else class="card" v-for="program in programsData" :key="program.student_id+'0'+program.program_id" @click="showProgramDetail(program)">
       <div class="card-left">
         <h4>{{ program.program.name }}</h4>
         <p>Supervisor: {{ program.supervisor }}</p>
@@ -42,6 +45,10 @@ h4, p{
   padding: 0 8px;
   margin: 0 auto;
   max-width: 640px;
+}
+
+.emptyMessage{
+  padding: 24px;
 }
 
 .card{

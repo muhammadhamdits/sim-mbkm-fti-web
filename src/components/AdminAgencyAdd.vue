@@ -7,7 +7,7 @@
       <input type="text" v-model="name">
       <p>{{ error.name }}</p>
       <label>Description:</label>
-      <input type="text" v-model="description">
+      <textarea cols="30" rows="10" v-model="description"></textarea>
       <p>{{ error.description }}</p>
       <label>Address:</label>
       <input type="text" v-model="address">
@@ -173,7 +173,7 @@ label{
   font-weight: bold;
 }
 
-input, button{
+input, button, textarea{
   display: block;
   padding: 10px 6px;
   width: 100%;

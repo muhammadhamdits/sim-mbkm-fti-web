@@ -3,15 +3,17 @@
     <form>
       <h3>Agency {{ agencyData.name }} Detail</h3>
       <label>Name:</label>
-      <input type="text" v-model="agencyData.name" readonly>
+      <p>{{ agencyData.name }}</p>
       <label>Sector:</label>
-      <input type="text" v-model="agencyData.sector" readonly>
+      <p>{{ agencyData.sector }}</p>
       <label>Description:</label>
-      <input type="text" v-model="agencyData.description" readonly>
+      <p>{{ agencyData.description }}</p>
       <label>Address:</label>
-      <input type="text" v-model="agencyData.address" readonly>
+      <p>{{ agencyData.address }}</p>
       <label>Website:</label>
-      <input type="text" v-model="agencyData.website" readonly>
+      <p>
+        <a target="_blank" :href="'https://'+agencyData.website">{{ agencyData.website }}</a>
+      </p>
       <button @click="backWard">
         <span class="material-icons">arrow_back</span> Back
       </button>

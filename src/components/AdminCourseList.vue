@@ -16,7 +16,9 @@
         <tr v-for="(course, index) in initCourses" :key="course.id">
           <td>{{ 1+index }}</td>
           <td class="text-left responsive">{{ course.code }}</td>
-          <td class="text-left">{{ course.name }}</td>
+          <td class="text-left">
+            <span class="item" @click="showCourseForm('Show', course)">{{ course.name }}</span>
+          </td>
           <td class="text-left responsive">{{ course.typeName }}</td>
           <!-- <td class="responsive">{{ course.sks }}</td> -->
           <td>
@@ -124,6 +126,15 @@ th, td{
 
 .text-left{
   text-align: left;
+}
+
+.item{
+  color: #42b983;
+  cursor: pointer;
+}
+
+.item:hover{
+  font-weight: bolder;
 }
 
 @media screen and (max-width: 600px) {

@@ -97,7 +97,14 @@ export default {
       }else if(status === 'Edit'){
         formData.value = {
           status,
-          formTitle: `Update Course ${data.name} Data`,
+          formTitle: `Update Course ${data.name}`,
+          buttonTitle: 'Submit',
+          course: data
+        }
+      }else if(status === 'Show'){
+        formData.value = {
+          status,
+          formTitle: `Detail Course ${data.name}`,
           buttonTitle: 'Submit',
           course: data
         }

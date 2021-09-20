@@ -110,14 +110,14 @@ export default {
       }else if(status === 'Edit'){
         formData.value = {
           status,
-          formTitle: `Update Program ${data.name} Data`,
+          formTitle: `Update Program ${data.name}`,
           program: data,
           courses: initCourses.value
         }
       }else if(status === 'Show'){
         formData.value = {
           status,
-          formTitle: `Detail Program ${data.name} Data`,
+          formTitle: `Detail Program ${data.name}`,
           program: data,
           courses: initCourses.value
         }

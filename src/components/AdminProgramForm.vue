@@ -28,7 +28,7 @@
       <input type="date" v-model="end_date">
       <p>{{ error.end_date }}</p>
       <label>Description</label>
-      <input type="text" v-model="description">
+      <textarea cols="30" rows="10" v-model="description"></textarea>
       <p>{{ error.description }}</p>
       <label>Minimum Semester</label>
       <input type="number" v-model="min_semester">
@@ -311,7 +311,7 @@ label{
   font-weight: bold;
 }
 
-input, button, select, input:disabled, select:disabled{
+input, button, select, input:disabled, select:disabled, textarea{
   background-color: #fff;
   display: block;
   padding: 10px 6px;
