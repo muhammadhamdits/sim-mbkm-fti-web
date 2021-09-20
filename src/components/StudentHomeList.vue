@@ -1,17 +1,25 @@
 <template>
-  <div class="card" v-for="program in programs" :key="program.id" @click="showDetailProgram(program)" :ref="`cardDom${program.id}`">
+  <div class="card" v-for="program in orderedPrograms" :key="program.id" @click="showDetailProgram(program)" :ref="`cardDom${program.id}`">
     <h4>{{ program.name }}</h4>
     <p>{{ program.program_type.name }} | {{ program.agency.name }}</p>
-    <h5><span class="material-icons">verified</span> {{ program.is_certified }}</h5>
+    <h5 v-if="program.registStatus">Status : Open Registration</h5>
+    <h5 v-else>Status : <span style="color: firebrick">Closed Registration</span></h5>
+    <!-- <h5><span class="material-icons">verified</span> {{ program.is_certified }}</h5> -->
   </div>
 </template>
 
 <script>
 import { ref } from '@vue/reactivity'
+import _ from 'lodash'
 
 export default {
   name: 'StudentHomeList',
   props: ['programs'],
+  computed: {
+    orderedPrograms: function() {
+      return _.orderBy(this.programs, ['registStatus', 'program_type.name'], ['desc', 'asc'])
+    }
+  },
   emits: ['statusChange'],
   setup(){
 

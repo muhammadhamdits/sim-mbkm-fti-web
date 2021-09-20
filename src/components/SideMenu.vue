@@ -8,10 +8,10 @@
           <p>{{ userData.role }} | {{ userData.username || userData.nim || userData.nip }}</p>
         </div>
         <div class="userMenu">
-          <p class="userMenuItem text-left" @click="redirectUser('supervisor')" v-if="$route.path.split('/')[1] !== 'supervisor'">
+          <p class="userMenuItem text-left" @click="redirectUser('supervisor')" v-if="$route.path.split('/')[1] !== 'supervisor' && userData.role === 'HeadOfDept'">
             <span class="material-icons float-left">supervisor_account</span> Supervisor Page
           </p>
-          <p class="userMenuItem text-left" @click="redirectUser('headofdept')" v-else>
+          <p class="userMenuItem text-left" @click="redirectUser('headofdept')" v-else-if="userData.role === 'HeadOfDept'">
             <span class="material-icons float-left">assignment_ind</span> Head of Dept Page
           </p>
           <p class="userMenuItem text-left" @click="logOutUser">

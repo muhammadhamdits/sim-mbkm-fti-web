@@ -9,6 +9,10 @@
     <p>{{ program.agency.name }}</p>
     <label>Type:</label>
     <p>{{ program.program_type.name }}</p>
+    <label>Open Date:</label>
+    <p>{{ program.open_date }}</p>
+    <label>Close Date:</label>
+    <p>{{ program.close_date }}</p>
     <label>Start Date:</label>
     <p>{{ program.start_date }}</p>
     <label>End Date:</label>
@@ -24,7 +28,7 @@
       <div class="badge" v-for="course in program.courses" :key="course.id">{{ course.name }}</div>
     </div>
   </div>
-  <div v-if="showRegistButton">
+  <div v-if="showRegistButton && program.registStatus">
     <button class="register-button" @click="registerConfirm" v-if="notRegistered && state">
       <span class="material-icons">person_add_alt_1</span>
       REGISTER
