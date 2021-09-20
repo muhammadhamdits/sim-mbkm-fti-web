@@ -26,6 +26,10 @@
                   <p class="value">{{ studentProgramDetail.program.name }}</p>
                 </div>
                 <div class="data-group">
+                  <p class="label">Status:</p>
+                  <p class="value">{{ studentProgramDetail.status_name }}</p>
+                </div>
+                <div class="data-group">
                   <p class="label">Agency:</p>
                   <p class="value">{{ studentProgramDetail.program.agency.name }}</p>
                 </div>
@@ -80,20 +84,25 @@
                 <div class="card">
                   <div class="card-header">
                     Courses
+                    <span class="material-icons" style="font-size: 1em; float: right; cursor: pointer" @click="changeGradingStatus">settings</span>
                   </div>
                   <div class="card-body">
                     <div class="list-wrapper" v-for="course in studentProgramDetail.courses" :key="course.course_id">
                       <div class="list-left">
                         <div class="item">{{ course.course.name }}</div>
-                        <div class="badge">{{ course.course.sks }} SKS</div>
-                        <div class="badge" v-if="course.is_accepted">Accepted</div>
-                        <div class="badge" v-else>Not Accepted</div>
+                        <div style="margin: 4px 0">
+                          <div class="badge">{{ course.course.sks }} SKS</div>
+                          <div class="badge" v-if="course.is_accepted">Accepted</div>
+                          <div class="badge" v-else>Not Accepted</div>
+                        </div>
                       </div>
                       <div class="list-right">
-                        <span class="material-icons badge-danger" @click="confirmCourse(false, course.course_id)"  v-if="course.is_accepted">close</span>
-                        <span class="material-icons badge-success" @click="confirmCourse(true, course.course_id)" v-else>check</span>
+                        <span class="material-icons badge-danger" @click="confirmCourse(false, course.course_id)"  v-if="course.is_accepted && studentProgramDetail.status !== 4">close</span>
+                        <span class="material-icons badge-success" @click="confirmCourse(true, course.course_id)" v-else-if="studentProgramDetail.status !== 4">check</span>
+                        <input type="text" style="width: 24px; height: 24px" v-if="gradingStatus" v-model="grade[course.id]">
                       </div>
                     </div>
+                    <span class="badge" style="margin-top: 16px; cursor: pointer" @click="submitGrade" v-if="gradingStatus">Submit</span>
                   </div>
                 </div>
               </div>
@@ -122,16 +131,22 @@ export default {
     const detailStatus = ref(false)
     const showModal = ref(false)
     const modalMessage = ref('')
+    const gradingStatus = ref(false)
+    const grade = ref({})
 
     const closeModal = () => {
       showModal.value = false
+    }
+
+    const changeGradingStatus = () => {
+      gradingStatus.value = !gradingStatus.value
     }
 
     onMounted(() => {
       document.title = 'Home - SIM MBKM FTI'
     })
 
-    return { studentPrograms, studentProgramDetail, detailStatus, showModal, modalMessage, closeModal }
+    return { studentPrograms, studentProgramDetail, detailStatus, showModal, modalMessage, gradingStatus, grade, closeModal, changeGradingStatus }
   },
   methods:{
     async getAllPrograms(){
@@ -175,6 +190,9 @@ export default {
       this.studentPrograms = await this.getAllPrograms()
       let tempStudentProgramDetail = this.studentPrograms.find(tempStudentProgram => tempStudentProgram.program_id === this.studentProgramDetail.program_id && tempStudentProgram.student_id === this.studentProgramDetail.student_id)
       this.studentProgramDetail = tempStudentProgramDetail
+    },
+    async submitGrade(){
+      console.log(this.grade)
     }
   },
   async mounted(){

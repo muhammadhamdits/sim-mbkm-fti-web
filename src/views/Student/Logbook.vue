@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="studentPrograms.length">
     <div class="left-content">
       <div class="card" v-if="showLog">
         <div class="card-header">
@@ -57,8 +57,11 @@
       </div>
     </div>
   </div>
+  <div class="container" v-else style="display: block; width: 100%; text-align: center; margin: 16px auto">
+    <p>You dont have any program registered....</p>
+  </div>
 
-  <button class="float" @click="showAddLogbook()" v-if="studentProgramData.student_id">
+  <button class="float" @click="showAddLogbook()" v-if="addLogbookAbility">
     <p><span class="material-icons">add</span></p>
   </button>
 
@@ -101,6 +104,7 @@ export default {
     const alertMessage = ref('')
     const newComment = ref('')
     const apiUri = ref('')
+    const addLogbookAbility = ref(false)
 
     const showAddLogbook = () => {
       showModal.value = true
@@ -114,6 +118,10 @@ export default {
     const showLogbooks = (state, data = {}) => {
       showLog.value = state
       studentProgramData.value = data
+      
+      if(data.status === 3) addLogbookAbility.value = true
+      else addLogbookAbility.value = false
+
       logData.value = false
     }
 
@@ -122,7 +130,7 @@ export default {
       apiUri.value = process.env.VUE_APP_API_URI
     })
 
-    return { showLog, showModal, log, file, studentPrograms, studentProgramData, logData, alertStatus, alertMessage, newComment, apiUri, showAddLogbook, closeModal, showLogbooks }
+    return { showLog, showModal, log, file, studentPrograms, studentProgramData, logData, alertStatus, alertMessage, newComment, apiUri, addLogbookAbility, showAddLogbook, closeModal, showLogbooks }
   },
   methods: {
     async submitLog(){
