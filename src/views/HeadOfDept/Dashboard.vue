@@ -46,13 +46,21 @@
       <div class="col">
         <div class="card">
           <div class="card-header">Student Program by Agency</div>
-          <div class="card-body">Ini grafik</div>
+          <div class="card-body">
+            <div v-if="rendered">
+              <PieChart :chartData="spbaData"/>
+            </div>
+          </div>
         </div>
       </div>
       <div class="col">
         <div class="card">
           <div class="card-header">Student Program by Program Type</div>
-          <div class="card-body">Ini grafik</div>
+          <div class="card-body">
+            <div v-if="rendered">
+              <PieChart :chartData="spbptData"/>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -61,12 +69,17 @@
 
 <script>
 import { onMounted, ref } from '@vue/runtime-core'
-import { getCookie } from '../../utils/function'
+import { getCookie, getRandomRgb } from '../../utils/function'
+import PieChart from '../../components/PieChart.vue'
 
 export default {
   name: 'HeadOfDeptDashboard',
+  components: { PieChart },
   setup(){
     const submissions = ref([])
+    const rendered = ref(false)
+    const spbaData = ref({})
+    const spbptData = ref({})
 
     const getAllSubmissions = async () => {
       let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student-program`, {
@@ -81,14 +94,42 @@ export default {
       submissions.value = jsonData
     }
 
+    const initChartData = (field) => {
+      const labels = [...new Set(submissions.value.map(item => item.program[field].name))]
+      const datasetData = []
+      const datasetBgColor = []
+
+      labels.forEach((label) => {
+        datasetData.push(submissions.value.filter((submission) => submission.program[field].name === label).length)
+        datasetBgColor.push(getRandomRgb())
+      })
+
+      let chartOptions = {
+        type: 'pie',
+        data: {
+          labels,
+          datasets: [{
+            data: datasetData,
+            backgroundColor: datasetBgColor,
+            hoverOffset: 4
+          }]
+        }
+      }
+
+      return chartOptions
+    }
+
     onMounted(async () => {
       await getAllSubmissions()
+      
+      spbaData.value = initChartData('agency')
+      spbptData.value = initChartData('program_type')
 
-      // console.log(submissions.value)
+      rendered.value = true
       document.title = 'Dashboard - SIM MBKM FTI'
     })
 
-    return { submissions }
+    return { submissions, spbaData, spbptData, rendered }
   }
 }
 </script>
