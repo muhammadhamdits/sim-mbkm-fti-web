@@ -70,10 +70,10 @@
       {{ alertMessage }}
     </div>
     <div class="modal-container" v-else>
-      <label>File</label>
-      <input type="file" @change="onFileChange" ref="file">
       <label>Log Activity</label>
       <textarea cols="30" rows="10" v-model="log"></textarea>
+      <label>File</label>
+      <input type="file" @change="onFileChange" ref="file">
       <div class="button-container">
         <button><span class="material-icons" @click="closeModal">close</span></button>
         <button><span class="material-icons" @click="submitLog">save</span></button>

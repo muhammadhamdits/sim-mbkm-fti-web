@@ -1,10 +1,12 @@
 <template>
-  <div class="card" v-for="program in orderedPrograms" :key="program.id" @click="showDetailProgram(program)" :ref="`cardDom${program.id}`">
-    <h4>{{ program.name }}</h4>
-    <p>{{ program.program_type.name }} | {{ program.agency.name }}</p>
-    <h5 v-if="program.registStatus">Registration Status : Open</h5>
-    <h5 v-else>Registration Status : <span style="color: firebrick">Closed</span></h5>
-    <!-- <h5><span class="material-icons">verified</span> {{ program.is_certified }}</h5> -->
+  <div v-for="program in orderedPrograms" :key="program.id">
+    <div class="card" @click="showDetailProgram(program)" :ref="`cardDom${program.id}`" v-if="Date.now() < new Date(program.end_date)">
+      <h4>{{ program.name }}</h4>
+      <p>{{ program.program_type.name }} | {{ program.agency.name }}</p>
+      <h5 v-if="program.registStatus">Registration Status : Open</h5>
+      <h5 v-else>Registration Status : <span style="color: firebrick">Closed</span></h5>
+      <!-- <h5><span class="material-icons">verified</span> {{ program.is_certified }}</h5> -->
+    </div>
   </div>
 </template>
 

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-25" v-if="listStatus">
-        <div class="card" v-for="submission in submissions" :key="submission.student_id + submission.program_id" @click="updateStatus('Detail', submission)" :ref="`cardDom${submission.student_id}+${submission.program_id}`">
+        <div class="card" v-for="submission in orderedSubmissions" :key="submission.student_id + submission.program_id" @click="updateStatus('Detail', submission)" :ref="`cardDom${submission.student_id}+${submission.program_id}`">
           <div class="card-body">
             <h4>{{ submission.student.name }}</h4>
             <h5>{{ submission.program.name }}</h5>
@@ -80,13 +80,13 @@
                     <span class="material-icons" @click="editInfo" v-if="!editStatus">edit</span>
                   </div>
                   <div class="card-body" v-if="editStatus">
-                    <h6>Status:</h6>
+                    <h5>Status:</h5>
                     <select v-model="submissionDetail.status">
                       <option value="0">Proposed</option>
                       <option value="1">Accepted</option>
                       <option value="2">Rejected</option>
                     </select>
-                    <h6>Supervisor:</h6>
+                    <h5>Supervisor:</h5>
                     <select v-model="submissionDetail.lecturer_id">
                       <option :value="lecturer.id" v-for="lecturer in lecturers" :key="lecturer.id">{{ lecturer.name }}</option>
                     </select>
@@ -95,11 +95,11 @@
                       <button @click="submitEditForm"><span class="material-icons">save</span></button>
                     </div>
                   </div>
-                  <div class="card-body" v-else>
-                    <h6>Status:</h6>
-                    <h5>{{ submissionDetail.status_name }}</h5>
-                    <h6>Supervisor:</h6>
-                    <h5>{{ submissionDetail.supervisor }}</h5>
+                  <div class="card-body text-left" v-else>
+                    <h5>Status:</h5>
+                    <a>{{ submissionDetail.status_name }}</a>
+                    <h5>Supervisor:</h5>
+                    <a>{{ submissionDetail.supervisor }}</a>
                   </div>
                 </div>
               </div>
@@ -110,25 +110,53 @@
                   <div class="card-header">
                     Files
                   </div>
-                  <div class="card-body">
+                  <div class="card-body text-left">
                     <h5>Accepted File:</h5>
                     <a :href="apiUri+'/student/'+submissionDetail.student_id+'/program/'+submissionDetail.program_id+'/accepted_file/download'" :download="submissionDetail.accepted_file" v-if="submissionDetail.accepted_file" class="download-link">
                       <span class="material-icons file-download">save_alt</span>
                       Download File
                     </a>
-                    <p v-else>Not yet uploaded..</p>
+                    <a v-else>Not yet uploaded..</a>
                     <h5>Completed File:</h5>
                     <a :href="apiUri+'/student/'+submissionDetail.student_id+'/program/'+submissionDetail.program_id+'/completed_file/download'" :download="submissionDetail.completed_file" v-if="submissionDetail.completed_file" class="download-link">
                       <span class="material-icons file-download">save_alt</span>
                       Download File
                     </a>
-                    <p v-else>Not yet uploaded..</p>
+                    <a v-else>Not yet uploaded..</a>
                     <h5>Transcript File:</h5>
                     <a :href="apiUri+'/student/'+submissionDetail.student_id+'/program/'+submissionDetail.program_id+'/transcript_file/download'" :download="submissionDetail.transcript_file" v-if="submissionDetail.transcript_file" class="download-link">
                       <span class="material-icons file-download">save_alt</span>
                       Download File
                     </a>
-                    <p v-else>Not yet uploaded..</p>
+                    <a v-else>Not yet uploaded..</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="card">
+                  <div class="card-header">
+                    Courses
+                    <span class="material-icons" @click="toggleConfirmCourse">edit</span>
+                  </div>
+                  <div class="card-body" v-if="refresh">
+                    <div class="list text-left" v-for="course in orderedCourses" :key="course.course_id">
+                      <h5 style="display: inline-block">{{ course.course.name }}</h5>
+                      <span v-if="confirmCourseState" style="float: right; margin-top: 7px">
+                        <label class="switch">
+                          <input type="checkbox" v-model="sdc[course.course_id]">
+                          <span class="slider round"></span>
+                        </label>
+                      </span>
+                      <span v-else>
+                        <span class="material-icons badge-success" v-if="course.is_accepted">check</span>
+                        <span class="material-icons badge-danger" v-else>remove</span>
+                      </span>
+                    </div>
+                    <div class="button-wrapper" v-if="confirmCourseState" style="margin-top: 8px">
+                      <button @click="submitConfimrCourse"><span class="material-icons">save</span></button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -148,9 +176,18 @@
 <script>
 import { onMounted, ref } from '@vue/runtime-core'
 import { getCookie } from '../../utils/function'
+import _ from 'lodash'
 
 export default {
   name: 'HeadOfDeptSubmissions',
+  computed: {
+    orderedSubmissions: function() {
+      return _.orderBy(this.submissions, ['student.name', 'program.name'], ['asc', 'asc'])
+    },
+    orderedCourses: function(){
+      return _.orderBy(this.submissionDetail.courses, ['course.name'], 'asc')
+    }
+  },
   setup(){
     const submissions = ref([])
     const lecturers = ref([])
@@ -159,6 +196,9 @@ export default {
     const detailStatus = ref(false)
     const editStatus = ref(false)
     const apiUri = ref('')
+    const confirmCourseState = ref(false)
+    const sdc = ref([])
+    const refresh = ref(true)
 
     const getAllSubmissions = async () => {
       let fetchResult = await fetch(`${process.env.VUE_APP_API_URI}/student-program`, {
@@ -193,7 +233,7 @@ export default {
       apiUri.value = process.env.VUE_APP_API_URI
     })
 
-    return { submissions, lecturers, submissionDetail, listStatus, detailStatus, editStatus, apiUri, getAllSubmissions }
+    return { submissions, lecturers, submissionDetail, listStatus, detailStatus, editStatus, apiUri, confirmCourseState, sdc, refresh, getAllSubmissions }
   },
   methods: {
     updateStatus(state, data){
@@ -205,6 +245,12 @@ export default {
         this.detailStatus = true
         this.editStatus = false
         this.submissionDetail = data
+        this.sdc = []
+        data.courses.forEach(element => {
+          this.sdc[element.course_id] = element.is_accepted
+        })
+        // console.log(this.sdc)
+        // console.log(data)
       }
     },
     editInfo(){
@@ -231,6 +277,35 @@ export default {
       document.getElementsByClassName('active')[0].click()
       this.closeEditForm()
       // console.log(jsonData)
+    },
+    toggleConfirmCourse(){
+      this.confirmCourseState = !this.confirmCourseState
+    },
+    async submitConfimrCourse(){
+      let bodyData = []
+      this.sdc.forEach((v, i) => {
+        bodyData.push({ course_id: i, is_accepted: v })
+      })
+      // console.log(bodyData)
+      let fetchResult = await fetch(`${this.apiUri}/student/${this.submissionDetail.student_id}/program/${this.submissionDetail.program_id}/course`, {
+        method: 'PUT',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          jwt: getCookie('jwt')
+        },
+        body: JSON.stringify(bodyData)
+      })
+      let jsonData = await fetchResult.json()
+      // console.log(jsonData)
+      await this.getAllSubmissions()
+      this.submissionDetail =  this.submissions.find(obj => { 
+        return obj.student_id === this.submissionDetail.student_id && obj.program_id === this.submissionDetail.program_id
+      })
+      // console.log(this.submissions)
+      this.confirmCourseState = !this.confirmCourseState
+      this.refresh = false
+      this.refresh = true
     }
   }
 }
@@ -254,7 +329,7 @@ select{
 }
 
 .col-2 h5{
- margin-bottom: 8px;
+ margin-top: 8px;
 }
 
 .text-left{
@@ -371,7 +446,7 @@ select{
 
 .button-wrapper button{
   outline: none;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 2px 4px;
   background-color: #42b983;
   border: 1px solid #42b983;
@@ -382,8 +457,9 @@ select{
 }
 
 .button-wrapper button:hover{
-  background-color: #fff;
-  color: #42b983;
+  background-color: #2c815b;
+  border: 1px solid #2c815b;
+  color: #fff;
 }
 
 .button-wrapper button .material-icons{
@@ -402,6 +478,84 @@ select{
 
 .file-download{
   text-align: left;
+  vertical-align: middle;
+}
+
+.badge-danger, .badge-success{
+  vertical-align: middle;
+  float: right;
+  /* cursor: pointer; */
+}
+
+.badge-danger{
+  color: firebrick;
+}
+
+.badge-success{
+  color: #42b983;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  /* height: 34px; */
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 12px;
+  left: 4px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #42b983;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #42b983;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(12px);
+  -ms-transform: translateX(12px);
+  transform: translateX(12px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 
 @media screen and (max-width: 600px) {

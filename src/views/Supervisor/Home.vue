@@ -90,16 +90,9 @@
                     <div class="list-wrapper" v-for="course in studentProgramDetail.courses" :key="course.course_id">
                       <div class="list-left">
                         <div class="item">{{ course.course.name }}</div>
-                        <div style="margin: 4px 0">
-                          <div class="badge">{{ course.course.sks }} SKS</div>
-                          <div class="badge" v-if="course.is_accepted">Accepted</div>
-                          <div class="badge" v-else>Not Accepted</div>
-                        </div>
                       </div>
                       <div class="list-right">
-                        <span class="material-icons badge-danger" @click="confirmCourse(false, course.course_id)"  v-if="course.is_accepted && studentProgramDetail.status !== 4">close</span>
-                        <span class="material-icons badge-success" @click="confirmCourse(true, course.course_id)" v-else-if="studentProgramDetail.status !== 4">check</span>
-                        <input type="text" style="width: 24px; height: 24px" v-if="gradingStatus" v-model="grade[course.id]">
+                        <input type="text" style="width: 24px;" v-if="gradingStatus" v-model="grade[course.id]">
                       </div>
                     </div>
                     <span class="badge" style="margin-top: 16px; cursor: pointer" @click="submitGrade" v-if="gradingStatus">Submit</span>
